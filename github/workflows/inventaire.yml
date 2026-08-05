@@ -1,0 +1,55 @@
+name: Inventaire du flux
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Date a examiner, au format AAAA-MM-JJ. Laisser vide pour aujourd hui."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  inventaire:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Recuperer le contenu du depot
+        uses: actions/checkout@v4
+
+      - name: Installer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Lancer l inventaire
+        run: node outils/inventaire.mjs "${{ inputs.date }}"
+
+      - name: Ouvrir une proposition avec le rapport
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "Robot de suivi PLF"
+          git config user.email "actions@github.com"
+          git add -A rapports
+          if git diff --cached --quiet; then
+            echo "Aucun rapport produit."
+            exit 0
+          fi
+          JOUR="${{ inputs.date }}"
+          if [ -z "$JOUR" ]; then JOUR=$(date -u +%Y-%m-%d); fi
+          BRANCHE="inventaire-$JOUR-$(date -u +%H%M%S)"
+          git checkout -b "$BRANCHE"
+          git commit -m "Inventaire du flux du $JOUR"
+          git push origin "$BRANCHE"
+          gh pr create \
+            --base main \
+            --head "$BRANCHE" \
+            --title "Inventaire du flux du $JOUR" \
+            --body "Rapport de diagnostic sur le flux de publications de l Assemblee nationale.
+
+          Ce rapport ne modifie ni la frise ni les donnees. Il sert a verifier ce que contient reellement le flux et comment les documents se rattachent a un dossier legislatif.
+
+          Ouvrez le fichier depose dans le dossier rapports pour le lire."
