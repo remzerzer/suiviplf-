@@ -1,0 +1,141 @@
+{
+  "dossier": "Projet de loi de finances pour 2026",
+  "texte": "1906",
+  "depot": "2025-10-14",
+  "derniere_verification": null,
+  "sequence": [
+    {
+      "etape": "conseil-ministres", "date": "2025-10-14",
+      "doc": "Présenté par Roland Lescure et Amélie de Montchalin",
+      "lien": "https://www.budget.gouv.fr/calendrier-budgetaire",
+      "origine": "manuelle"
+    },
+    {
+      "etape": "depot-an", "date": "2025-10-14",
+      "doc": "Texte n° 1906",
+      "precision": "Le dépôt intervient une semaine après le premier mardi d'octobre fixé par l'article 39 de la loi organique.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/17/textes/l17b1906_projet-loi",
+      "origine": "automatique"
+    },
+    {
+      "etape": "com-fin-an", "date": "2025-10-23",
+      "doc": "Rapport n° 1996, quatre tomes",
+      "precision": "Rapport général de Philippe Juvin. Sept commissions saisies pour avis ont rendu leurs travaux entre le 22 octobre et le 6 novembre.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/17/rapports/cion_fin/l17b1996-ti_rapport-fond",
+      "origine": "automatique"
+    },
+    {
+      "etape": "rejet-an", "date": "2025-11-21",
+      "doc": "Texte n° 180",
+      "precision": "Trente-huit jours après le dépôt.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/17/textes/l17t0180_texte-adopte-seance",
+      "origine": "manuelle"
+    },
+    {
+      "etape": "transmission-senat", "date": "2025-11-24",
+      "doc": "Texte n° 138 (2025-2026)",
+      "lien": "https://www.senat.fr/leg/pjl25-138.html",
+      "origine": "automatique"
+    },
+    {
+      "etape": "seance-senat", "date": "2025-11-27",
+      "doc": "Dix-sept jours de séance",
+      "precision": "Débats les 27, 28, 29 et 30 novembre, puis du 1er au 6, du 8 au 13 et le 15 décembre 2025.",
+      "lien": "https://www.senat.fr/interventions/crisom_pjlf2026_1.html",
+      "origine": "automatique"
+    },
+    {
+      "etape": "adoption-senat", "date": "2025-12-15",
+      "doc": "Texte n° 29 (2025-2026)",
+      "precision": "Vingt et un jours après la saisine. La version adoptée diffère sensiblement de celle que l'Assemblée avait rejetée.",
+      "lien": "https://www.senat.fr/leg/tas25-029.html",
+      "origine": "automatique"
+    },
+    {
+      "etape": "cmp-desaccord", "date": "2025-12-19",
+      "doc": "Rapport n° 245 au Sénat, n° 2266 à l'Assemblée",
+      "lien": "https://www.senat.fr/rap/l25-245/l25-245.html",
+      "origine": "manuelle"
+    },
+    {
+      "etape": "loi-speciale-promulguee", "date": "2025-12-26",
+      "doc": "Loi n° 2025-1316 du 26 décembre 2025",
+      "precision": "Elle évalue à 45 231 897 951 euros les prélèvements sur recettes au profit des collectivités territoriales. Publiée au Journal officiel du 27 décembre 2025.",
+      "lien": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053173986",
+      "origine": "manuelle"
+    },
+    {
+      "etape": "nl-transmission-an", "date": "2025-12-31",
+      "doc": "Texte n° 2247",
+      "precision": "L'exercice 2026 s'ouvre sans loi de finances.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/17/textes/l17b2247_projet-loi",
+      "origine": "automatique"
+    },
+    {
+      "etape": "nl-com-an", "date": "2026-01-10",
+      "doc": "Rapport n° 2321, deux volumes",
+      "precision": "Réunions des 8, 9 et 10 janvier 2026.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/17/rapports/cion_fin/l17b2321-v1_rapport-fond",
+      "origine": "automatique"
+    },
+    {
+      "etape": "adoption-sans-vote", "date": "2026-01-27",
+      "doc": "Texte n° 218",
+      "lien": "https://www.assemblee-nationale.fr/dyn/17/textes/l17t0218_texte-adopte-seance",
+      "origine": "manuelle"
+    },
+    {
+      "etape": "nl-transmission-senat", "date": "2026-01-27",
+      "doc": "Texte n° 308 (2025-2026)",
+      "lien": "https://www.senat.fr/leg/pjl25-308.html",
+      "origine": "automatique"
+    },
+    {
+      "etape": "question-prealable-senat", "date": "2026-01-29",
+      "doc": "Texte n° 48 (2025-2026)",
+      "precision": "Adoptée par 203 voix contre 32.",
+      "lien": "https://www.senat.fr/leg/tas25-048.html",
+      "origine": "manuelle"
+    },
+    {
+      "etape": "engagement-responsabilite", "date": "2026-01-30",
+      "doc": "Rapport n° 2412",
+      "precision": "Commission des finances le matin, puis engagement de responsabilité. Une motion de censure est déposée le jour même par 113 députés.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/17/rapports/cion_fin/l17b2412_rapport-fond",
+      "origine": "manuelle"
+    },
+    {
+      "etape": "adoption-definitive", "date": "2026-02-02",
+      "doc": "Texte n° 227",
+      "precision": "Cent onze jours après le dépôt, pour un délai constitutionnel de soixante-dix.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/17/textes/l17t0227_texte-adopte-seance",
+      "origine": "automatique"
+    },
+    {
+      "etape": "saisine-cc", "date": "2026-02-04",
+      "doc": "Saisine du Premier ministre et de soixante députés au moins",
+      "lien": "https://www.conseil-constitutionnel.fr/decision/2026/2026901DC.htm",
+      "origine": "manuelle"
+    },
+    {
+      "etape": "decision-cc", "date": "2026-02-19",
+      "doc": "Décision n° 2026-901 DC, conformité partielle",
+      "precision": "Quinze jours après la saisine.",
+      "lien": "https://www.conseil-constitutionnel.fr/decision/2026/2026901DC.htm",
+      "origine": "manuelle"
+    },
+    {
+      "etape": "promulgation", "date": "2026-02-19",
+      "doc": "Loi n° 2026-103 du 19 février 2026",
+      "precision": "Promulguée le jour même de la décision, cent vingt-huit jours après le dépôt.",
+      "lien": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053508155",
+      "origine": "manuelle"
+    },
+    {
+      "etape": "publication-jo", "date": "2026-02-20",
+      "doc": "Journal officiel n° 43",
+      "lien": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053508155",
+      "origine": "manuelle"
+    }
+  ]
+}

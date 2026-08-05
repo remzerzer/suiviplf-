@@ -127,7 +127,7 @@ body{margin:0;background:var(--fond);color:var(--encre);
 </div>
 
 <section class="statut">
-  <h1 class="titre-page">Suivi du Projet de loi de finance pour 2026 </h1>
+  <h1 class="titre-page">Suivi du Projet de loi de finance pour 2026</h1>
   <p class="fil">Phase parlementaire · rejeu des données officielles</p>
   <p class="phrase" id="phrase"></p>
 </section>
@@ -149,115 +149,8 @@ body{margin:0;background:var(--fond);color:var(--encre);
   var DEPOT = new Date(2025,9,14);
   var MAX = 129;
 
-  var E = [
-    {d:"2025-10-14",ch:"an",co:"centre",nom:"Dépôt à l'Assemblée nationale",
-     doc:"Texte n° 1906",nature:"Ouverture de la procédure",
-     txt:"Le texte a été déposé à l'Assemblée nationale par Roland Lescure et Amélie de Montchalin, après avoir été présenté en Conseil des ministres le matin même. Il est aussitôt renvoyé à la commission des finances, qui est seule compétente au fond sur un projet de loi de finances.",
-     lien:"https://www.assemblee-nationale.fr/dyn/17/textes/l17b1906_projet-loi",
-     ph:"vient d'être déposé à l'Assemblée"},
+  var E = [];
 
-    {d:"2025-10-23",ch:"an",co:"gauche",nom:"Rapport de la commission des finances",
-     doc:"Rapport n° 1996, quatre tomes",nature:"Travaux de commission",
-     txt:"La commission des finances a examiné le texte et publié son rapport général, rédigé par Philippe Juvin. Sept autres commissions, saisies pour avis sur les crédits qui les concernent, ont rendu leurs travaux entre le 22 octobre et le 6 novembre.",
-     lien:"https://www.assemblee-nationale.fr/dyn/17/rapports/cion_fin/l17b1996-ti_rapport-fond",
-     ph:"est en commission des finances"},
-
-    {d:"2025-11-21",ch:"an",co:"gauche",nom:"Texte rejeté par l'Assemblée",
-     doc:"Texte n° 180",nature:"Séance publique",
-     txt:"L'Assemblée nationale a rejeté le texte en première lecture, trente-huit jours après son dépôt. Ce rejet ne met pas fin à la procédure : le Gouvernement saisit le Sénat et la navette se poursuit normalement.",
-     lien:"https://www.assemblee-nationale.fr/dyn/17/textes/l17t0180_texte-adopte-seance",
-     ph:"a été rejeté par l'Assemblée"},
-
-    {d:"2025-11-24",ch:"senat",co:"droite",nom:"Transmission au Sénat",
-     doc:"Texte n° 138 (2025-2026)",nature:"Saisine du Sénat",
-     txt:"Le Gouvernement a transmis le texte au Sénat, qui devient à son tour compétent pour l'examiner. Sa commission des finances a désigné Jean-François Husson comme rapporteur général.",
-     lien:"https://www.senat.fr/leg/pjl25-138.html",
-     ph:"est transmis au Sénat"},
-
-    {d:"2025-11-27",ch:"senat",co:"droite",nom:"Séance publique au Sénat",
-     doc:"Dix-sept jours de séance",nature:"Séance publique",
-     txt:"Le Sénat a examiné le texte en séance publique pendant dix-sept jours, du 27 novembre au 15 décembre 2025. C'est au cours de ces séances que les amendements sénatoriaux sont discutés et votés.",
-     lien:"https://www.senat.fr/amendements/2025-2026/138/accueil.html",
-     ph:"est en séance au Sénat"},
-
-    {d:"2025-12-15",ch:"senat",co:"droite",nom:"Texte adopté par le Sénat",
-     doc:"Texte n° 29 (2025-2026)",nature:"Séance publique",
-     txt:"Le Sénat a adopté sa propre version du texte, vingt et un jours après avoir été saisi. Cette version diffère sensiblement de celle que l'Assemblée avait rejetée, ce qui rend un désaccord entre les deux chambres inévitable.",
-     lien:"https://www.senat.fr/leg/tas25-029.html",
-     ph:"est adopté par le Sénat"},
-
-    {d:"2025-12-19",ch:"an",co:"centre",nom:"Commission mixte paritaire : désaccord",
-     doc:"Rapport n° 245 au Sénat, n° 2266 à l'Assemblée",nature:"Conciliation",
-     txt:"La commission mixte paritaire, composée de sept députés et sept sénateurs, n'est pas parvenue à s'accorder sur un texte commun. Le texte doit donc repartir en nouvelle lecture devant chaque chambre avant que le Gouvernement puisse demander à l'Assemblée de statuer définitivement.",
-     lien:"https://www.senat.fr/rap/l25-245/l25-245.html",
-     ph:"est en commission mixte paritaire"},
-
-    {d:"2025-12-26",ch:"an",co:"centre",nom:"Loi spéciale promulguée",
-     doc:"Loi n° 2025-1316 du 26 décembre 2025",nature:"secours",
-     txt:"Faute de budget voté avant la fin de l'année, le Parlement a adopté une loi spéciale qui autorise l'État à continuer de percevoir les impôts existants jusqu'à l'entrée en vigueur de la loi de finances. Elle évalue également à 45,2 milliards d'euros les prélèvements sur recettes au profit des collectivités territoriales.",
-     lien:"https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053173986",
-     ph:"attend, sous le régime de la loi spéciale"},
-
-    {d:"2025-12-31",ch:"an",co:"gauche",nom:"Nouvelle lecture, saisine de l'Assemblée",
-     doc:"Texte n° 2247",nature:"Saisine",
-     txt:"L'Assemblée nationale a été saisie du texte tel que le Sénat l'avait modifié, pour une nouvelle lecture. L'exercice budgétaire 2026 s'ouvre donc sans loi de finances, sous le seul régime de la loi spéciale.",
-     lien:"https://www.assemblee-nationale.fr/dyn/17/textes/l17b2247_projet-loi",
-     ph:"revient à l'Assemblée en nouvelle lecture"},
-
-    {d:"2026-01-10",ch:"an",co:"gauche",nom:"Commission des finances, nouvelle lecture",
-     doc:"Rapport n° 2321, deux volumes",nature:"Travaux de commission",
-     txt:"La commission des finances a réexaminé le texte au cours de trois réunions, du 8 au 10 janvier 2026. Les députés peuvent y déposer de nouveaux amendements, sauf sur les articles que les deux chambres ont déjà votés dans les mêmes termes, qui ne sont plus discutables.",
-     lien:"https://www.assemblee-nationale.fr/dyn/17/rapports/cion_fin/l17b2321-v1_rapport-fond",
-     ph:"est en commission, en nouvelle lecture"},
-
-    {d:"2026-01-27",ch:"an",co:"gauche",nom:"Adoption par engagement de responsabilité",
-     doc:"Texte n° 218",nature:"censure",
-     txt:"Le Gouvernement a engagé sa responsabilité sur le vote du texte. Aucune motion de censure n'ayant été adoptée, le texte est réputé adopté par l'Assemblée sans qu'un vote intervienne sur son contenu.",
-     lien:"https://www.assemblee-nationale.fr/dyn/17/textes/l17t0218_texte-adopte-seance",
-     ph:"est adopté à l'Assemblée par 49.3"},
-
-    {d:"2026-01-27",ch:"senat",co:"droite",nom:"Nouvelle lecture, saisine du Sénat",
-     doc:"Texte n° 308 (2025-2026)",nature:"Saisine",
-     txt:"Le texte est retourné au Sénat pour une nouvelle lecture, étape que la Constitution impose avant toute lecture définitive à l'Assemblée. Jean-François Husson a déposé son rapport dès le lendemain.",
-     lien:"https://www.senat.fr/leg/pjl25-308.html",
-     ph:"repart au Sénat en nouvelle lecture"},
-
-    {d:"2026-01-29",ch:"senat",co:"droite",nom:"Question préalable adoptée",
-     doc:"Texte n° 48 (2025-2026)",nature:"Séance publique",
-     txt:"Le Sénat a adopté par 203 voix contre 32 une question préalable, procédure par laquelle il rejette le texte sans en discuter le contenu. Aucun amendement sénatorial n'a donc été adopté à ce stade, alors que ce sont les seuls que l'Assemblée pourra reprendre en lecture définitive.",
-     lien:"https://www.senat.fr/leg/tas25-048.html",
-     ph:"est rejeté par le Sénat"},
-
-    {d:"2026-01-30",ch:"an",co:"gauche",nom:"Lecture définitive et motion de censure",
-     doc:"Rapport n° 2412",nature:"censure",
-     txt:"La commission des finances s'est réunie le matin, puis le Gouvernement a de nouveau engagé sa responsabilité sur le texte. Cent treize députés ont déposé une motion de censure le jour même, dans le délai de vingt-quatre heures prévu par la Constitution.",
-     lien:"https://www.assemblee-nationale.fr/dyn/17/rapports/cion_fin/l17b2412_rapport-fond",
-     ph:"est en lecture définitive"},
-
-    {d:"2026-02-02",ch:"an",co:"gauche",nom:"Adoption définitive",
-     doc:"Texte n° 227",nature:"censure",
-     txt:"La motion de censure a été rejetée, ce qui rend le texte définitivement adopté par le Parlement. Cent onze jours se sont écoulés depuis le dépôt, pour un délai constitutionnel fixé à soixante-dix jours.",
-     lien:"https://www.assemblee-nationale.fr/dyn/17/textes/l17t0227_texte-adopte-seance",
-     ph:"est adopté définitivement"},
-
-    {d:"2026-02-04",ch:"an",co:"centre",nom:"Saisine du Conseil constitutionnel",
-     doc:"Saisine du Premier ministre et de soixante députés au moins",nature:"Contrôle",
-     txt:"Le Premier ministre et au moins soixante députés ont saisi le Conseil constitutionnel avant la promulgation. Cette saisine suspend le délai de promulgation et ouvre au Conseil un délai d'un mois pour statuer, ramené à huit jours si le Gouvernement invoque l'urgence.",
-     lien:"https://www.conseil-constitutionnel.fr/decision/2026/2026901DC.htm",
-     ph:"est devant le Conseil constitutionnel"},
-
-    {d:"2026-02-19",ch:"an",co:"centre",nom:"Décision du Conseil constitutionnel",
-     doc:"Décision n° 2026-901 DC, partiellement conforme",nature:"Contrôle",
-     txt:"Le Conseil constitutionnel a rendu sa décision quinze jours après avoir été saisi. Il déclare le texte partiellement conforme à la Constitution : certaines dispositions sont censurées et ne figureront donc pas dans la loi promulguée.",
-     lien:"https://www.conseil-constitutionnel.fr/decision/2026/2026901DC.htm",
-     ph:"a été examiné par le Conseil constitutionnel"},
-
-    {d:"2026-02-19",ch:"an",co:"centre",nom:"Promulgation",
-     doc:"Loi n° 2026-103 du 19 février 2026",nature:"Fin de la procédure",
-     txt:"Le Président de la République a promulgué la loi le jour même de la décision du Conseil constitutionnel, et elle a été publiée au Journal officiel le lendemain. Cent vingt-huit jours se sont écoulés entre le dépôt du projet et son entrée en vigueur.",
-     lien:"https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053508155",
-     ph:"est promulgué"}
-  ];
 
   function dt(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2]);}
   function ajout(d,n){var x=new Date(d.getTime());x.setDate(x.getDate()+n);return x;}
@@ -320,7 +213,42 @@ body{margin:0;background:var(--fond);color:var(--encre);
     },95);
   });
 
-  rendu();
+  function jour(a,b){return Math.round((b-a)/86400000);}
+
+  Promise.all([
+    fetch('donnees/catalogue-etapes.json?t='+Date.now()).then(function(r){return r.json();}),
+    fetch('donnees/plf-2026.json?t='+Date.now()).then(function(r){return r.json();})
+  ]).then(function(res){
+    var cat = res[0].etapes, d = res[1];
+
+    var p = d.depot.split('-');
+    DEPOT = new Date(+p[0], +p[1]-1, +p[2]);
+
+    E = d.sequence.map(function(ev){
+      var c = cat[ev.etape];
+      if(!c) return null;
+      return {
+        d: ev.date,
+        ch: c.chambre === 'senat' ? 'senat' : 'an',
+        co: c.cote,
+        nom: c.nom,
+        doc: ev.doc || '',
+        txt: c.texte + (ev.precision ? ' ' + ev.precision : ''),
+        lien: ev.lien || '',
+        ph: c.phrase
+      };
+    }).filter(Boolean);
+
+    if(!E.length) throw new Error('sequence vide');
+
+    var derniere = dt(E[E.length-1].d);
+    MAX = Math.max(1, jour(DEPOT, derniere) + 3);
+    elC.max = MAX;
+    elC.value = MAX;
+    rendu();
+  }).catch(function(){
+    elP.innerHTML = '<span class="l">Données indisponibles.</span>';
+  });
 })();
 </script>
 </body>
