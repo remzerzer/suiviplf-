@@ -1,5 +1,5 @@
 {
-  "version": "1.1",
+  "version": "1.2",
   "etabli_le": "2026-08-05",
   "etapes": {
     "conseil-ministres": {
@@ -66,6 +66,17 @@
       "fondement": "Règlement de l'Assemblée nationale",
       "texte": "Les commissions permanentes se sont saisies pour avis des crédits relevant de leur champ. Leurs avis n'engagent pas la commission des finances mais nourrissent la discussion des missions.",
       "phrase": "fait l'objet des avis des commissions",
+      "detection": "automatique"
+    },
+    "seance-an": {
+      "nom": "Discussion en séance publique à l'Assemblée",
+      "court": "Séance à l'Assemblée",
+      "chambre": "an",
+      "cote": "gauche",
+      "nature": "ordinaire",
+      "fondement": "Règlement de l'Assemblée nationale",
+      "texte": "L'Assemblée a examiné le texte en séance publique. C'est au cours de ces séances que les amendements sont discutés et votés.",
+      "phrase": "est en séance à l'Assemblée",
       "detection": "automatique"
     },
     "seance-partie1-an": {
