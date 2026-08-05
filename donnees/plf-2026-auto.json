@@ -1,0 +1,262 @@
+{
+  "dossier": {
+    "titre": "Projet de loi de finances pour 2026",
+    "titreChemin": "PLF_2026",
+    "senatChemin": "http://www.senat.fr/dossier-legislatif/pjlf2026.html"
+  },
+  "dossierRef": "DLR5L17N52428",
+  "depot": "2025-10-14",
+  "derniere_verification": "2026-08-05 17:49 UTC",
+  "sequence": [
+    {
+      "etape": "depot-an",
+      "date": "2025-10-14",
+      "doc": "PRJLANR5L17B1906",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/PRJLANR5L17B1906.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte AN1-DEPOT"
+    },
+    {
+      "etape": "avis-commissions",
+      "date": "2025-10-22",
+      "doc": "AVISANR5L17B1990",
+      "precision": "7 actes de ce type, du 2025-10-22 au 2025-11-06.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/AVISANR5L17B1990.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte AN1-COM-AVIS-RAPPORT"
+    },
+    {
+      "etape": "com-fin-an",
+      "date": "2025-10-23",
+      "doc": "RAPPANR5L17B1996",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/RAPPANR5L17B1996.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte AN1-COM-FOND-RAPPORT"
+    },
+    {
+      "etape": "seance-an",
+      "date": "2025-10-24",
+      "precision": "36 actes de ce type, du 2025-10-24 au 2025-11-21.",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte AN1-DEBATS-SEANCE"
+    },
+    {
+      "etape": "rejet-an",
+      "date": "2025-11-21",
+      "doc": "PRJLANR5L17BTA0180",
+      "precision": "Statut enregistre par l Assemblee : rejeté.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/PRJLANR5L17BTA0180.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte AN1-DEBATS-DEC"
+    },
+    {
+      "etape": "transmission-senat",
+      "date": "2025-11-24",
+      "doc": "PRJLSNR5S479B0138",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/PRJLSNR5S479B0138.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte SN1-DEPOT"
+    },
+    {
+      "etape": "com-fin-senat",
+      "date": "2025-11-24",
+      "doc": "RAPPSNR5S479B0139",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/RAPPSNR5S479B0139.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte SN1-COM-FOND-RAPPORT"
+    },
+    {
+      "etape": "adoption-senat",
+      "date": "2025-12-15",
+      "doc": "PRJLSNR5S479BTA0029",
+      "precision": "Statut enregistre par l Assemblee : modifié.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/PRJLSNR5S479BTA0029.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte SN1-DEBATS-DEC"
+    },
+    {
+      "etape": "cmp-convocation",
+      "date": "2025-12-15",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte CMP-SAISIE"
+    },
+    {
+      "etape": "nl-transmission-an",
+      "date": "2025-12-15",
+      "doc": "PRJLANR5L17B2247",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/PRJLANR5L17B2247.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANNLEC-DEPOT"
+    },
+    {
+      "etape": "cmp-desaccord",
+      "date": "2026-01-02",
+      "precision": "Statut enregistre par l Assemblee : Désaccord.",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte CMP-DEC"
+    },
+    {
+      "etape": "nl-com-an",
+      "date": "2026-01-10",
+      "doc": "RAPPANR5L17B2321",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/RAPPANR5L17B2321.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANNLEC-COM-FOND-RAPPORT"
+    },
+    {
+      "etape": "nl-seance-an",
+      "date": "2026-01-13",
+      "precision": "12 actes de ce type, du 2026-01-13 au 2026-01-27.",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANNLEC-DEBATS-SEANCE"
+    },
+    {
+      "etape": "engagement-responsabilite",
+      "date": "2026-01-20",
+      "doc": "DECLANR5L17B2247-N0",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/DECLANR5L17B2247-N0.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANNLEC-DGVT"
+    },
+    {
+      "etape": "motion-censure-depot",
+      "date": "2026-01-20",
+      "doc": "MIONANR5L17B2247-N16",
+      "precision": "2 actes de ce type, du 2026-01-20 au 2026-01-20.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/MIONANR5L17B2247-N16.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANNLEC-MOTION"
+    },
+    {
+      "etape": "motion-censure-rejetee",
+      "date": "2026-01-23",
+      "precision": "Statut enregistre par l Assemblee : Motion rejetée. 2 actes de ce type, du 2026-01-23 au 2026-01-23.",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANNLEC-MOTION-VOTE"
+    },
+    {
+      "etape": "engagement-responsabilite",
+      "date": "2026-01-23",
+      "doc": "DECLANR5L17B2247-N1",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/DECLANR5L17B2247-N1.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANNLEC-DGVT"
+    },
+    {
+      "etape": "motion-censure-depot",
+      "date": "2026-01-23",
+      "doc": "MIONANR5L17B2247-N18",
+      "precision": "2 actes de ce type, du 2026-01-23 au 2026-01-23.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/MIONANR5L17B2247-N18.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANNLEC-MOTION"
+    },
+    {
+      "etape": "motion-censure-rejetee",
+      "date": "2026-01-27",
+      "precision": "Statut enregistre par l Assemblee : Motion rejetée. 2 actes de ce type, du 2026-01-27 au 2026-01-27.",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANNLEC-MOTION-VOTE"
+    },
+    {
+      "etape": "adoption-sans-vote",
+      "date": "2026-01-27",
+      "doc": "PRJLANR5L17BTA0218",
+      "precision": "Statut enregistre par l Assemblee : considéré comme adopté par l'Assemblée nationale en application de l'article 49, alinéa 3 de la Constitution.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/PRJLANR5L17BTA0218.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANNLEC-DEBATS-DEC"
+    },
+    {
+      "etape": "nl-transmission-senat",
+      "date": "2026-01-27",
+      "doc": "PRJLSNR5S479B0308",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/PRJLSNR5S479B0308.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte SNNLEC-DEPOT"
+    },
+    {
+      "etape": "nl-com-senat",
+      "date": "2026-01-28",
+      "doc": "RAPPSNR5S479B0312",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/RAPPSNR5S479B0312.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte SNNLEC-COM-FOND-RAPPORT"
+    },
+    {
+      "etape": "rejet-senat",
+      "date": "2026-01-29",
+      "doc": "PRJLSNR5S479BTA0048",
+      "precision": "Statut enregistre par l Assemblee : rejeté.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/PRJLSNR5S479BTA0048.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte SNNLEC-DEBATS-DEC"
+    },
+    {
+      "etape": "lecture-definitive",
+      "date": "2026-01-29",
+      "doc": "PRJLANR5L17BTA0218",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/PRJLANR5L17BTA0218.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANLDEF-DEPOT"
+    },
+    {
+      "etape": "engagement-responsabilite",
+      "date": "2026-01-30",
+      "doc": "DECLANR5L17B2410-N0",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/DECLANR5L17B2410-N0.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANLDEF-DGVT"
+    },
+    {
+      "etape": "motion-censure-depot",
+      "date": "2026-01-30",
+      "doc": "MIONANR5L17B2410-N20",
+      "precision": "2 actes de ce type, du 2026-01-30 au 2026-01-30.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/MIONANR5L17B2410-N20.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANLDEF-MOTION"
+    },
+    {
+      "etape": "motion-censure-rejetee",
+      "date": "2026-02-02",
+      "precision": "Statut enregistre par l Assemblee : Motion rejetée. 2 actes de ce type, du 2026-02-02 au 2026-02-02.",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANLDEF-MOTION-VOTE"
+    },
+    {
+      "etape": "adoption-definitive",
+      "date": "2026-02-02",
+      "doc": "PRJLANR5L17BTA0227",
+      "precision": "Statut enregistre par l Assemblee : considéré comme adopté par l'Assemblée nationale en application de l'article 49, alinéa 3 de la Constitution.",
+      "lien": "https://www.assemblee-nationale.fr/dyn/opendata/PRJLANR5L17BTA0227.html",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte ANLDEF-DEBATS-DEC"
+    },
+    {
+      "etape": "saisine-cc",
+      "date": "2026-02-04",
+      "precision": "4 actes de ce type, du 2026-02-04 au 2026-02-06.",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte CC-SAISIE-AN"
+    },
+    {
+      "etape": "decision-cc",
+      "date": "2026-02-19",
+      "doc": "Decision n° 2026-901 DC",
+      "precision": "Statut enregistre par l Assemblee : Partiellement conforme.",
+      "lien": "http://www.conseil-constitutionnel.fr/decision/2026/2026901DC.htm",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte CC-CONCLUSION"
+    },
+    {
+      "etape": "promulgation",
+      "date": "2026-02-19",
+      "doc": "Loi n° 2026-103 de finances pour 2026",
+      "precision": "Publiee au Journal officiel n° 43 du 2026-02-20.",
+      "lien": "http://www.legifrance.gouv.fr/WAspad/UnTexteDeJorf?numjo=CPPX2524517L",
+      "origine": "automatique",
+      "source": "Dossier legislatif DLR5L17N52428, acte PROM-PUB"
+    }
+  ]
+}
