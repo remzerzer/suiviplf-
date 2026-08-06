@@ -211,6 +211,25 @@ for (const [, groupe] of parCle) {
   const j = { etape: p.etape, date: p.date, origine: "automatique",
     source: `Dossier ${p.ref}, acte ${p.code}` };
 
+  /* Contexte destine a la redaction. Il ne contient que des faits releves
+     ou calcules, jamais une interpretation. */
+  const PHASES = {
+    AN1: "premiere lecture a l Assemblee",
+    SN1: "premiere lecture au Senat",
+    CMP: "commission mixte paritaire",
+    ANNLEC: "nouvelle lecture a l Assemblee",
+    SNNLEC: "nouvelle lecture au Senat",
+    ANLDEF: "lecture definitive a l Assemblee",
+    CC: "controle du Conseil constitutionnel",
+    PROM: "promulgation"
+  };
+  j.contexte = {
+    phase: PHASES[p.code.split("-")[0]] || null,
+    code_acte: p.code,
+    statut_officiel: p.statut || null,
+    dossier: p.titre
+  };
+
   const precisions = [];
   if (p.statut) precisions.push(`Statut enregistre par l Assemblee : ${p.statut}.`);
   if (p.noteDate) precisions.push(p.noteDate);
@@ -237,6 +256,41 @@ for (const [, groupe] of parCle) {
 }
 
 jalons.sort((a, b) => a.date.localeCompare(b.date) || a.etape.localeCompare(b.etape));
+
+/* ============================================================
+   Enrichissement du contexte : jours ecoules, delais, anteriorite
+   ============================================================ */
+
+const depotJalon = jalons.find(j => j.etape === "depot-an");
+const dateDepot = depotJalon ? depotJalon.date : null;
+const ecart = (a, b) => Math.round((new Date(b) - new Date(a)) / 86400000);
+
+/* Depart du decompte : saisi a la main, absent des donnees ouvertes. */
+let departDecompte = null;
+try {
+  const reglages = JSON.parse(await fs.readFile("donnees/reglages.json", "utf8"));
+  departDecompte = reglages.depart_decompte || null;
+} catch { /* fichier absent, le contexte restera incomplet */ }
+
+const voteAN = jalons.find(j => ["adoption-an", "rejet-an", "adoption-sans-vote", "rejet-partie1-an"].includes(j.etape));
+
+jalons.forEach((j, i) => {
+  const c = j.contexte;
+  if (dateDepot) c.jours_depuis_depot = ecart(dateDepot, j.date);
+  if (departDecompte) {
+    c.depart_decompte = departDecompte;
+    c.jours_depuis_depart = ecart(departDecompte, j.date);
+    if (voteAN) {
+      const d = ecart(departDecompte, voteAN.date);
+      c.delai_40_jours_respecte = d <= 40;
+      c.jours_assemblee_premiere_lecture = d;
+    }
+  } else {
+    c.depart_decompte = null;
+    c.avertissement = "Date de depart du decompte non renseignee : les delais ne peuvent pas etre qualifies.";
+  }
+  c.jalons_anterieurs = jalons.slice(0, i).map(x => x.etape);
+});
 
 /* ============================================================
    Ecriture
