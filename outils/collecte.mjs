@@ -1,63 +1,299 @@
-name: Collecteur du dossier
+/* Collecteur du dossier legislatif, version corrigee.
+   Traite un ou plusieurs dossiers, traduit leurs actes en jalons, fusionne le
+   tout dans une seule sequence, et compare a la sequence saisie a la main.
+   Peut aussi chercher la reference d un dossier par son intitule. */
 
-on:
-  workflow_dispatch:
-    inputs:
-      dossiers:
-        description: "References des dossiers, separees par des virgules"
-        required: true
-        default: "DLR5L17N52428"
-      sortie:
-        description: "Fichier de sequence a produire"
-        required: true
-        default: "donnees/plf-2026-auto.json"
-      reference:
-        description: "Sequence saisie a la main, pour comparaison"
-        required: false
-        default: "donnees/plf-2026.json"
-      recherche:
-        description: "Chercher un dossier par son intitule. Laisser vide pour collecter."
-        required: false
-        default: ""
+import { execSync } from "node:child_process";
+import fs from "node:fs/promises";
+import { existsSync } from "node:fs";
 
-permissions:
-  contents: write
-  pull-requests: write
+const refsBrut = process.argv[2] || "DLR5L17N52428";
+const sortie = process.argv[3] || "donnees/plf-2026-auto.json";
+const reference = process.argv[4] || "donnees/plf-2026.json";
+const recherche = (process.argv[5] || "").trim();
 
-jobs:
-  collecteur:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Recuperer le contenu du depot
-        uses: actions/checkout@v4
+const REFS = refsBrut.split(",").map(s => s.trim()).filter(Boolean);
+const ARCHIVE = "https://data.assemblee-nationale.fr/static/openData/repository/17/loi/dossiers_legislatifs/Dossiers_Legislatifs.json.zip";
 
-      - name: Installer Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
+/* ============================================================
+   Correspondance entre un acte et une etape du catalogue
+   ============================================================ */
 
-      - name: Lancer le collecteur
-        run: node outils/collecteur.mjs "${{ inputs.dossiers }}" "${{ inputs.sortie }}" "${{ inputs.reference }}" "${{ inputs.recherche }}"
+const sens = a => {
+  const s = a.statutConclusion && a.statutConclusion.libelle;
+  const d = a.decision && a.decision.libelle;
+  return (s || d || "").toLowerCase();
+};
+const contient = (a, mot) => sens(a).normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(mot);
 
-      - name: Ouvrir une proposition
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "Robot de suivi PLF"
-          git config user.email "actions@github.com"
-          git add -A donnees rapports
-          if git diff --cached --quiet; then
-            echo "Aucun changement."
-            exit 0
-          fi
-          BRANCHE="collecteur-$(date -u +%Y%m%d-%H%M%S)"
-          git checkout -b "$BRANCHE"
-          git commit -m "Collecte automatique"
-          git push origin "$BRANCHE"
-          gh pr create \
-            --base main \
-            --head "$BRANCHE" \
-            --title "Collecte automatique du $(date -u +%d/%m/%Y)" \
-            --body "Le programme a lu le ou les dossiers legislatifs demandes et traduit leurs actes en jalons.
+const CORRESPONDANCE = {
+  "AN1-DEPOT": () => "depot-an",
+  "AN1-COM-FOND-RAPPORT": () => "com-fin-an",
+  "AN1-COM-AVIS-RAPPORT": () => "avis-commissions",
+  "AN1-DEBATS-SEANCE": () => "seance-an",
+  "AN1-DEBATS-DEC": a => contient(a, "rejet") ? "rejet-an"
+    : contient(a, "49") ? "adoption-sans-vote" : "adoption-an",
 
-          Ouvrez le rapport dans le dossier rapports avant de decider. Il indique, pour chaque jalon, si le document correspondant est publie ou non."
+  "SN1-DEPOT": () => "transmission-senat",
+  "SN1-COM-FOND-RAPPORT": () => "com-fin-senat",
+  "SN1-DEBATS-DEC": a => contient(a, "rejet") ? "rejet-senat"
+    : contient(a, "conforme") ? "adoption-conforme-senat" : "adoption-senat",
+
+  "CMP-SAISIE": () => "cmp-convocation",
+  "CMP-DEC": a => contient(a, "desaccord") ? "cmp-desaccord" : "cmp-accord",
+
+  "ANNLEC-DEPOT": () => "nl-transmission-an",
+  "ANNLEC-COM-FOND-RAPPORT": () => "nl-com-an",
+  "ANNLEC-DEBATS-SEANCE": () => "nl-seance-an",
+  "ANNLEC-DGVT": () => "engagement-responsabilite",
+  "ANNLEC-MOTION": () => "motion-censure-depot",
+  "ANNLEC-MOTION-VOTE": a => contient(a, "rejet") ? "motion-censure-rejetee" : "motion-censure-adoptee",
+  "ANNLEC-DEBATS-DEC": a => contient(a, "rejet") ? "rejet-an"
+    : contient(a, "49") ? "adoption-sans-vote" : "nl-adoption-an",
+
+  "SNNLEC-DEPOT": () => "nl-transmission-senat",
+  "SNNLEC-COM-FOND-RAPPORT": () => "nl-com-senat",
+  "SNNLEC-DEBATS-DEC": a => contient(a, "rejet") ? "rejet-senat" : "nl-adoption-senat",
+
+  "ANLDEF-DEPOT": () => "lecture-definitive",
+  "ANLDEF-DGVT": () => "engagement-responsabilite",
+  "ANLDEF-MOTION": () => "motion-censure-depot",
+  "ANLDEF-MOTION-VOTE": a => contient(a, "rejet") ? "motion-censure-rejetee" : "motion-censure-adoptee",
+  "ANLDEF-DEBATS-DEC": a => contient(a, "rejet") ? "rejet-lecture-definitive" : "adoption-definitive",
+
+  "CC-SAISIE-PM": () => "saisine-cc",
+  "CC-SAISIE-AN": () => "saisine-cc",
+  "CC-CONCLUSION": () => "decision-cc",
+  "PROM-PUB": () => "promulgation"
+};
+
+const REGROUPES = new Set(["seance-an", "nl-seance-an", "avis-commissions", "saisine-cc"]);
+
+/* ============================================================
+   Archive
+   ============================================================ */
+
+const r = await fetch(ARCHIVE);
+if (!r.ok) { console.error(`Archive inaccessible : ${r.status}`); process.exit(1); }
+await fs.writeFile("/tmp/dossiers.zip", Buffer.from(await r.arrayBuffer()));
+
+/* ---------- Mode recherche ---------- */
+
+if (recherche) {
+  await fs.mkdir("/tmp/tous", { recursive: true });
+  execSync(`unzip -o -q /tmp/dossiers.zip -d /tmp/tous`, { stdio: "pipe" });
+  const trouves = [];
+  const mot = recherche.toLowerCase();
+  async function fouiller(dir) {
+    for (const e of await fs.readdir(dir, { withFileTypes: true })) {
+      const p = `${dir}/${e.name}`;
+      if (e.isDirectory()) { await fouiller(p); continue; }
+      if (!e.name.endsWith(".json")) continue;
+      const t = await fs.readFile(p, "utf8");
+      if (!t.toLowerCase().includes(mot)) continue;
+      try {
+        const d = (JSON.parse(t).dossierParlementaire) || {};
+        const titre = d.titreDossier && (d.titreDossier.titre || d.titreDossier);
+        if (String(titre || "").toLowerCase().includes(mot)) {
+          trouves.push({ uid: d.uid, titre: String(titre) });
+        }
+      } catch { /* fichier illisible */ }
+    }
+  }
+  await fouiller("/tmp/tous");
+  const l = [`# Recherche de dossier : « ${recherche} »`, "", `${trouves.length} dossiers trouves.`, "",
+    `| Reference | Intitule |`, `|---|---|`];
+  trouves.slice(0, 60).forEach(t => l.push(`| \`${t.uid}\` | ${t.titre.slice(0, 110).replace(/\|/g, " ")} |`));
+  await fs.mkdir("rapports", { recursive: true });
+  await fs.writeFile("rapports/recherche-dossier.md", l.join("\n") + "\n");
+  console.log(`${trouves.length} dossiers trouves. Rapport : rapports/recherche-dossier.md`);
+  process.exit(0);
+}
+
+/* ============================================================
+   Lecture des dossiers demandes
+   ============================================================ */
+
+function enfants(n) {
+  let f = n && n.actesLegislatifs;
+  if (f && f.acteLegislatif) f = f.acteLegislatif;
+  return Array.isArray(f) ? f : f ? [f] : [];
+}
+const jour = d => d ? String(d).slice(0, 10) : null;
+
+function documentAssocie(a) {
+  if (typeof a.texteAssocie === "string") return a.texteAssocie;
+  const t = a.textesAssocies && a.textesAssocies.texteAssocie;
+  if (!t) return null;
+  const liste = Array.isArray(t) ? t : [t];
+  const bta = liste.find(x => x.typeTexte === "BTA") || liste[0];
+  return bta && bta.refTexteAssocie ? bta.refTexteAssocie : null;
+}
+
+/* Regle de lien : chaque chambre chez elle, et rien d invente. */
+function lienDocument(doc, cheminSenat) {
+  if (!doc || !/^[A-Z]{4}/.test(doc)) return null;
+  if (doc.includes("ANR5")) return `https://www.assemblee-nationale.fr/dyn/opendata/${doc}.html`;
+  if (doc.includes("SNR5")) return cheminSenat || null;
+  return null;
+}
+
+const brut = [];
+const infoDossiers = [];
+
+for (const ref of REFS) {
+  await fs.rm("/tmp/extrait", { recursive: true, force: true });
+  await fs.mkdir("/tmp/extrait", { recursive: true });
+  try { execSync(`unzip -o -j /tmp/dossiers.zip "*${ref}*" -d /tmp/extrait`, { stdio: "pipe" }); } catch { /* rien */ }
+  const fichiers = existsSync("/tmp/extrait") ? await fs.readdir("/tmp/extrait") : [];
+  if (!fichiers.length) { infoDossiers.push({ ref, titre: null, actes: 0 }); continue; }
+
+  const racine = JSON.parse(await fs.readFile(`/tmp/extrait/${fichiers[0]}`, "utf8"));
+  const dossier = racine.dossierParlementaire || racine;
+  const td = dossier.titreDossier;
+  const titre = td && (td.titre || td) || ref;
+  const cheminSenat = td && td.senatChemin ? td.senatChemin.replace(/^http:/, "https:") : null;
+
+  const actes = [];
+  (function parcourir(n) {
+    if (!n || typeof n !== "object") return;
+    if (n.codeActe) actes.push(n);
+    enfants(n).forEach(parcourir);
+  })({ actesLegislatifs: dossier.actesLegislatifs });
+
+  infoDossiers.push({ ref, titre: String(titre), actes: actes.length });
+
+  /* Date de reference pour la decision de commission mixte :
+     celle du depot des rapports, seule date publiee par les deux chambres. */
+  const rapportCMP = actes.find(a => a.codeActe === "CMP-COM-RAPPORT-AN")
+                  || actes.find(a => a.codeActe === "CMP-COM-RAPPORT-SN");
+  const dateRapportCMP = rapportCMP ? jour(rapportCMP.dateActe) : null;
+
+  for (const a of actes) {
+    const regle = CORRESPONDANCE[a.codeActe];
+    if (!regle) continue;
+    const etape = regle(a);
+    let date = jour(a.dateActe);
+    let noteDate = null;
+    if (a.codeActe === "CMP-DEC" && dateRapportCMP && dateRapportCMP !== date) {
+      noteDate = `Date du depot des rapports de commission mixte. Le dossier enregistre la decision au ${date}.`;
+      date = dateRapportCMP;
+    }
+    if (!etape || !date) continue;
+    brut.push({ etape, date, code: a.codeActe, noteDate, cheminSenat,
+      statut: (a.statutConclusion && a.statutConclusion.libelle)
+           || (a.decision && a.decision.libelle) || null,
+      doc: documentAssocie(a), acte: a, ref, titre: String(titre) });
+  }
+}
+
+/* ============================================================
+   Regroupement et mise en forme
+   ============================================================ */
+
+const parCle = new Map();
+for (const j of brut) {
+  const cle = REGROUPES.has(j.etape) ? `${j.ref}|${j.etape}` : `${j.etape}|${j.date}|${j.ref}`;
+  if (!parCle.has(cle)) parCle.set(cle, []);
+  parCle.get(cle).push(j);
+}
+
+const jalons = [];
+for (const [, groupe] of parCle) {
+  groupe.sort((a, b) => a.date.localeCompare(b.date));
+  const p = groupe[0], dernier = groupe[groupe.length - 1], a = p.acte;
+
+  const j = { etape: p.etape, date: p.date, origine: "automatique",
+    source: `Dossier ${p.ref}, acte ${p.code}` };
+
+  const precisions = [];
+  if (p.statut) precisions.push(`Statut enregistre par l Assemblee : ${p.statut}.`);
+  if (p.noteDate) precisions.push(p.noteDate);
+  if (groupe.length > 1) precisions.push(`${groupe.length} actes de ce type, du ${p.date} au ${dernier.date}.`);
+  if (REFS.length > 1) precisions.push(`Dossier : ${p.titre}.`);
+
+  if (p.doc) j.doc = p.doc;
+  const lien = lienDocument(p.doc, p.cheminSenat);
+  if (lien) j.lien = lien;
+
+  if (a.codeLoi) {
+    j.doc = `Loi n° ${a.codeLoi} ${a.titreLoi || ""}`.trim();
+    if (a.infoJO) {
+      precisions.push(`Publiee au Journal officiel n° ${a.infoJO.numJO} du ${jour(a.infoJO.dateJO)}.`);
+      if (a.infoJO.urlLegifrance) j.lien = a.infoJO.urlLegifrance.replace(/^http:/, "https:");
+    }
+  }
+  if (a.urlConclusion) {
+    j.lien = a.urlConclusion.replace(/^http:/, "https:");
+    j.doc = `Decision n° ${a.anneeDecision}-${a.numDecision} DC`;
+  }
+  if (precisions.length) j.precision = precisions.join(" ");
+  jalons.push(j);
+}
+
+jalons.sort((a, b) => a.date.localeCompare(b.date) || a.etape.localeCompare(b.etape));
+
+/* ============================================================
+   Ecriture
+   ============================================================ */
+
+const principal = infoDossiers[0] || {};
+const depot = jalons.find(j => j.etape === "depot-an");
+const donnees = {
+  dossier: principal.titre || REFS[0],
+  dossierRefs: REFS,
+  depot: depot ? depot.date : (jalons[0] && jalons[0].date) || null,
+  derniere_verification: new Date().toISOString().slice(0, 16).replace("T", " ") + " UTC",
+  sequence: jalons
+};
+await fs.mkdir("donnees", { recursive: true });
+await fs.writeFile(sortie, JSON.stringify(donnees, null, 2) + "\n");
+
+/* ============================================================
+   Comparaison
+   ============================================================ */
+
+let manuelle = null;
+try { manuelle = JSON.parse(await fs.readFile(reference, "utf8")); } catch { /* absente */ }
+
+const l = [];
+const dire = (s = "") => l.push(s);
+dire(`# Collecte automatique`);
+dire();
+dire(`| Dossier | Reference | Actes lus |`);
+dire(`|---|---|---|`);
+infoDossiers.forEach(d => dire(`| ${d.titre || "introuvable"} | \`${d.ref}\` | ${d.actes} |`));
+dire();
+dire(`Jalons produits : ${jalons.length}.`);
+dire();
+dire(`## Sequence produite`);
+dire();
+dire(`| Date | Etape | Document | Lien |`);
+dire(`|---|---|---|---|`);
+for (const j of jalons) {
+  dire(`| ${j.date} | \`${j.etape}\` | ${j.doc || ""} | ${j.lien ? "oui" : "non publie"} |`);
+}
+dire();
+
+if (manuelle) {
+  const cle = j => `${j.etape}|${j.date}`;
+  const auto = new Set(jalons.map(cle));
+  const main = new Set(manuelle.sequence.map(cle));
+  const manquants = manuelle.sequence.filter(j => !auto.has(cle(j)));
+  const nouveaux = jalons.filter(j => !main.has(cle(j)));
+
+  dire(`## Presents dans la saisie manuelle, absents de la collecte`);
+  dire();
+  if (!manquants.length) dire(`Aucun.`);
+  else { dire(`| Date | Etape |`); dire(`|---|---|`); manquants.forEach(j => dire(`| ${j.date} | \`${j.etape}\` |`)); }
+  dire();
+  dire(`## Trouves par la collecte, absents de la saisie manuelle`);
+  dire();
+  if (!nouveaux.length) dire(`Aucun.`);
+  else { dire(`| Date | Etape |`); dire(`|---|---|`); nouveaux.forEach(j => dire(`| ${j.date} | \`${j.etape}\` |`)); }
+  dire();
+}
+
+await fs.mkdir("rapports", { recursive: true });
+await fs.writeFile(`rapports/collecte.md`, l.join("\n") + "\n");
+console.log(`${jalons.length} jalons. Sequence : ${sortie}. Rapport : rapports/collecte.md`);
