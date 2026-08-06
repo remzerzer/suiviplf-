@@ -81,27 +81,32 @@ await fs.writeFile("/tmp/dossiers.zip", Buffer.from(await r.arrayBuffer()));
 
 if (recherche) {
   await fs.mkdir("/tmp/tous", { recursive: true });
+  console.log("Decompression de l archive...");
   execSync(`unzip -o -q /tmp/dossiers.zip -d /tmp/tous`, { stdio: "pipe" });
-  const trouves = [];
+  console.log("Recherche...");
+  let candidats = [];
+  try {
+    candidats = execSync(
+      `grep -rilF ${JSON.stringify(recherche)} /tmp/tous --include=*.json`,
+      { encoding: "utf8", maxBuffer: 5e8 }
+    ).split("\n").filter(Boolean);
+  } catch { candidats = []; }
+  console.log(`${candidats.length} fichiers contiennent ces mots.`);
+
   const mot = recherche.toLowerCase();
-  async function fouiller(dir) {
-    for (const e of await fs.readdir(dir, { withFileTypes: true })) {
-      const p = `${dir}/${e.name}`;
-      if (e.isDirectory()) { await fouiller(p); continue; }
-      if (!e.name.endsWith(".json")) continue;
-      const t = await fs.readFile(p, "utf8");
-      if (!t.toLowerCase().includes(mot)) continue;
-      try {
-        const d = (JSON.parse(t).dossierParlementaire) || {};
-        const titre = d.titreDossier && (d.titreDossier.titre || d.titreDossier);
-        if (String(titre || "").toLowerCase().includes(mot)) {
-          trouves.push({ uid: d.uid, titre: String(titre) });
-        }
-      } catch { /* fichier illisible */ }
-    }
+  const trouves = [];
+  for (const p of candidats) {
+    try {
+      const d = (JSON.parse(await fs.readFile(p, "utf8")).dossierParlementaire) || {};
+      const td = d.titreDossier;
+      const titre = td && (td.titre || td);
+      if (String(titre || "").toLowerCase().includes(mot)) {
+        trouves.push({ uid: d.uid, titre: String(titre) });
+      }
+    } catch { /* fichier illisible */ }
   }
-  await fouiller("/tmp/tous");
-  const l = [`# Recherche de dossier : « ${recherche} »`, "", `${trouves.length} dossiers trouves.`, "",
+  const l = [`# Recherche de dossier : « ${recherche} »`, "",
+    `${candidats.length} fichiers contenaient ces mots, dont ${trouves.length} dans leur intitule.`, "",
     `| Reference | Intitule |`, `|---|---|`];
   trouves.slice(0, 60).forEach(t => l.push(`| \`${t.uid}\` | ${t.titre.slice(0, 110).replace(/\|/g, " ")} |`));
   await fs.mkdir("rapports", { recursive: true });
