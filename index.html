@@ -99,6 +99,12 @@ body{margin:0;background:var(--fond);color:var(--encre);
 .cle{font-family:"DM Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--gris);display:block;margin-bottom:2px}
 .fiche a{color:var(--bleu);text-underline-offset:2px;word-break:break-word}
+.pied{margin-top:48px;padding-top:16px;border-top:1px solid var(--trait);
+  font-family:"DM Mono",ui-monospace,monospace;font-size:11.5px;line-height:1.9;color:var(--gris)}
+.pied a{color:var(--gris);text-underline-offset:2px}
+.pied a:hover{color:var(--bleu)}
+.pied .sep{opacity:.45;padding:0 6px}
+.absent{color:var(--gris);font-style:italic}
 
 
 @media (max-width:720px){
@@ -139,6 +145,8 @@ body{margin:0;background:var(--fond);color:var(--encre);
 </div>
 
 <ol class="navette" id="navette"></ol>
+
+<footer class="pied" id="pied"></footer>
 
 </div>
 
@@ -190,7 +198,9 @@ body{margin:0;background:var(--fond);color:var(--encre);
           '</button>'+
           (o?'<div class="fiche">'+
             '<p>'+e.txt+'</p>'+
-            '<p><span class="cle">Document officiel</span><a href="'+e.lien+'" target="_blank" rel="noopener">'+e.lien+'</a></p>'+
+            (e.lien
+              ? '<p><span class="cle">Document officiel</span><a href="'+e.lien+'" target="_blank" rel="noopener">'+e.lien+'</a></p>'
+              : '<p><span class="cle">Document officiel</span><span class="absent">Non encore publié</span></p>')+
           '</div>':'')+
         '</div></li>';
     }).join("");
@@ -215,9 +225,19 @@ body{margin:0;background:var(--fond);color:var(--encre);
 
   function jour(a,b){return Math.round((b-a)/86400000);}
 
+  /* La séquence produite par le collecteur est préférée. Si elle n'existe pas
+     encore, on retombe sur la séquence saisie à la main. */
+  function sequence(){
+    return fetch('donnees/plf-2026-auto.json?t='+Date.now())
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .catch(function(){
+        return fetch('donnees/plf-2026.json?t='+Date.now()).then(function(r){ return r.json(); });
+      });
+  }
+
   Promise.all([
     fetch('donnees/catalogue-etapes.json?t='+Date.now()).then(function(r){return r.json();}),
-    fetch('donnees/plf-2026.json?t='+Date.now()).then(function(r){return r.json();})
+    sequence()
   ]).then(function(res){
     var cat = res[0].etapes, d = res[1];
 
@@ -243,6 +263,19 @@ body{margin:0;background:var(--fond);color:var(--encre);
 
     var derniere = dt(E[E.length-1].d);
     MAX = Math.max(1, jour(DEPOT, derniere) + 3);
+
+    /* Deux dates distinctes : quand les sources ont ete consultees,
+       et quand le dernier evenement est survenu. */
+    var verif = d.derniere_verification
+      ? d.derniere_verification.replace(" UTC", " UTC")
+      : "non renseignée";
+    document.getElementById("pied").innerHTML =
+      'Données vérifiées le <b>' + verif + '</b>' +
+      '<span class="sep">\u00b7</span>' +
+      'dernier évènement constaté le <b>' + fr(derniere) + '</b><br>' +
+      'Sources : Assemblée nationale et Sénat, licence ouverte Etalab' +
+      '<span class="sep">\u00b7</span>' +
+      '<a href="mentions-legales.html">Mentions légales</a>';
     elC.max = MAX;
     elC.value = MAX;
     rendu();
