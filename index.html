@@ -133,8 +133,8 @@ body{margin:0;background:var(--fond);color:var(--encre);
 </div>
 
 <section class="statut">
-  <h1 class="titre-page">Suivi du Projet de loi de finance pour 2026</h1>
-  <p class="fil">Phase parlementaire · rejeu des données officielles</p>
+  <h1 class="titre-page" id="titrePage">Suivi du projet de loi de finances</h1>
+  <p class="fil" id="fil">Phase parlementaire</p>
   <p class="phrase" id="phrase"></p>
 </section>
 
@@ -225,63 +225,76 @@ body{margin:0;background:var(--fond);color:var(--encre);
 
   function jour(a,b){return Math.round((b-a)/86400000);}
 
-  /* La séquence produite par le collecteur est préférée. Si elle n'existe pas
-     encore, on retombe sur la séquence saisie à la main. */
-  function sequence(){
-    return fetch('donnees/plf-2026-auto.json?t='+Date.now())
+  /* Le fichier courant.json designe le dossier a afficher et l ordre dans
+     lequel essayer ses fichiers de sequence. Changer ce fichier suffit a
+     basculer la frise d une annee sur l autre. */
+  function premierDisponible(liste){
+    if(!liste.length) return Promise.reject(new Error("aucune sequence"));
+    return fetch(liste[0] + '?t=' + Date.now())
       .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
-      .catch(function(){
-        return fetch('donnees/plf-2026.json?t='+Date.now()).then(function(r){ return r.json(); });
-      });
+      .catch(function(){ return premierDisponible(liste.slice(1)); });
   }
 
-  Promise.all([
-    fetch('donnees/catalogue-etapes.json?t='+Date.now()).then(function(r){return r.json();}),
-    sequence()
-  ]).then(function(res){
-    var cat = res[0].etapes, d = res[1];
-
-    var p = d.depot.split('-');
-    DEPOT = new Date(+p[0], +p[1]-1, +p[2]);
-
-    E = d.sequence.map(function(ev){
-      var c = cat[ev.etape];
-      if(!c) return null;
-      return {
-        d: ev.date,
-        ch: c.chambre === 'senat' ? 'senat' : 'an',
-        co: c.cote,
-        nom: c.nom,
-        doc: ev.doc || '',
-        txt: c.texte + (ev.precision ? ' ' + ev.precision : ''),
-        lien: ev.lien || '',
-        ph: c.phrase
-      };
-    }).filter(Boolean);
-
-    if(!E.length) throw new Error('sequence vide');
-
-    var derniere = dt(E[E.length-1].d);
-    MAX = Math.max(1, jour(DEPOT, derniere) + 3);
-
-    /* Deux dates distinctes : quand les sources ont ete consultees,
-       et quand le dernier evenement est survenu. */
-    var verif = d.derniere_verification
-      ? d.derniere_verification.replace(" UTC", " UTC")
-      : "non renseignée";
+  function pied(verif, derniere){
     document.getElementById("pied").innerHTML =
-      'Données vérifiées le <b>' + verif + '</b>' +
-      '<span class="sep">\u00b7</span>' +
-      'dernier évènement constaté le <b>' + fr(derniere) + '</b><br>' +
-      'Sources : Assemblée nationale et Sénat, licence ouverte Etalab' +
-      '<span class="sep">\u00b7</span>' +
-      '<a href="mentions-legales.html">Mentions légales</a>';
-    elC.max = MAX;
-    elC.value = MAX;
-    rendu();
-  }).catch(function(){
-    elP.innerHTML = '<span class="l">Données indisponibles.</span>';
-  });
+      'Données vérifiées le <b>' + (verif || "non renseignée") + '</b>' +
+      (derniere ? '<span class="sep">\u00b7</span>dernier évènement constaté le <b>' + fr(derniere) + '</b>' : '') +
+      '<br>Sources : Assemblée nationale et Sénat, licence ouverte Etalab';
+  }
+
+  fetch('donnees/courant.json?t=' + Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(conf){
+      document.getElementById("titrePage").textContent = conf.titre || "Suivi du projet de loi de finances";
+      document.getElementById("fil").textContent = conf.sous_titre || "Phase parlementaire";
+      document.title = conf.titre || document.title;
+      return Promise.all([
+        fetch('donnees/catalogue-etapes.json?t=' + Date.now()).then(function(r){ return r.json(); }),
+        premierDisponible(conf.sequences || [])
+      ]);
+    })
+    .then(function(res){
+      var cat = res[0].etapes, d = res[1];
+
+      E = (d.sequence || []).map(function(ev){
+        var c = cat[ev.etape];
+        if(!c) return null;
+        return {
+          d: ev.date,
+          ch: c.chambre === 'senat' ? 'senat' : 'an',
+          co: c.cote,
+          nom: c.nom,
+          doc: ev.doc || '',
+          txt: c.texte + (ev.precision ? ' ' + ev.precision : ''),
+          lien: ev.lien || '',
+          ph: c.phrase
+        };
+      }).filter(Boolean);
+
+      /* Avant le depot, la sequence est vide : on le dit, et on masque
+         le curseur de rejeu qui n aurait rien a parcourir. */
+      if(!E.length){
+        elP.innerHTML = '<span class="l">' + (d.dossier || "Le projet de loi de finances") +
+                        '</span><span class="l">n\'a pas encore été déposé.</span>';
+        document.querySelector(".barre").style.display = "none";
+        document.querySelector(".couloirs").style.display = "none";
+        pied(d.derniere_verification, null);
+        return;
+      }
+
+      var p = (d.depot || E[0].d).split('-');
+      DEPOT = new Date(+p[0], +p[1]-1, +p[2]);
+
+      var derniere = dt(E[E.length-1].d);
+      MAX = Math.max(1, jour(DEPOT, derniere) + 3);
+      pied(d.derniere_verification, derniere);
+      elC.max = MAX;
+      elC.value = MAX;
+      rendu();
+    })
+    .catch(function(){
+      elP.innerHTML = '<span class="l">Données indisponibles.</span>';
+    });
 })();
 </script>
 </body>
