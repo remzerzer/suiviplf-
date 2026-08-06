@@ -1,0 +1,18 @@
+{
+  "commentaire": "Désigne le dossier affiché par la frise. Pour basculer sur le PLF 2027, remplacer titre et sequences par les valeurs indiquées en bas de ce fichier.",
+
+  "titre": "Suivi du projet de loi de finances pour 2026",
+  "sous_titre": "Phase parlementaire · rejeu des données officielles",
+  "sequences": [
+    "donnees/plf-2026-auto.json",
+    "donnees/plf-2026.json"
+  ],
+
+  "bascule_2027": {
+    "titre": "Suivi du projet de loi de finances pour 2027",
+    "sous_titre": "Phase parlementaire",
+    "sequences": [
+      "donnees/plf-2027.json"
+    ]
+  }
+}
