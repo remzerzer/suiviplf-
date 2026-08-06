@@ -1,23 +1,31 @@
-name: Collecte du dossier
+name: Collecteur du dossier
 
 on:
   workflow_dispatch:
     inputs:
-      dossier:
-        description: "Reference du dossier legislatif"
+      dossiers:
+        description: "References des dossiers, separees par des virgules"
         required: true
         default: "DLR5L17N52428"
-      dates:
-        description: "Dates a examiner, separees par des virgules"
+      sortie:
+        description: "Fichier de sequence a produire"
         required: true
-        default: "2025-10-14,2025-10-23,2025-11-21,2025-12-15,2026-02-02"
+        default: "donnees/plf-2026-auto.json"
+      reference:
+        description: "Sequence saisie a la main, pour comparaison"
+        required: false
+        default: "donnees/plf-2026.json"
+      recherche:
+        description: "Chercher un dossier par son intitule. Laisser vide pour collecter."
+        required: false
+        default: ""
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  collecte:
+  collecteur:
     runs-on: ubuntu-latest
     steps:
       - name: Recuperer le contenu du depot
@@ -28,30 +36,28 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Lancer la collecte
-        run: node outils/collecte.mjs "${{ inputs.dossier }}" "${{ inputs.dates }}"
+      - name: Lancer le collecteur
+        run: node outils/collecteur.mjs "${{ inputs.dossiers }}" "${{ inputs.sortie }}" "${{ inputs.reference }}" "${{ inputs.recherche }}"
 
-      - name: Ouvrir une proposition avec le rapport
+      - name: Ouvrir une proposition
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "Robot de suivi PLF"
           git config user.email "actions@github.com"
-          git add -A rapports
+          git add -A donnees rapports
           if git diff --cached --quiet; then
-            echo "Aucun rapport produit."
+            echo "Aucun changement."
             exit 0
           fi
-          BRANCHE="collecte-$(date -u +%Y%m%d-%H%M%S)"
+          BRANCHE="collecteur-$(date -u +%Y%m%d-%H%M%S)"
           git checkout -b "$BRANCHE"
-          git commit -m "Collecte du dossier ${{ inputs.dossier }}"
+          git commit -m "Collecte automatique"
           git push origin "$BRANCHE"
           gh pr create \
             --base main \
             --head "$BRANCHE" \
-            --title "Collecte du dossier ${{ inputs.dossier }}" \
-            --body "Rapport de collecte sur le flux de l Assemblee nationale.
+            --title "Collecte automatique du $(date -u +%d/%m/%Y)" \
+            --body "Le programme a lu le ou les dossiers legislatifs demandes et traduit leurs actes en jalons.
 
-          Le programme a releve les documents publies aux dates demandees, ouvert leur notice, et retenu ceux qui se rattachent au dossier indique. Pour chacun, il propose l etape du catalogue qui parait convenir.
-
-          Ce rapport ne modifie ni la frise ni la sequence. Ouvrez le fichier depose dans le dossier rapports pour le lire."
+          Ouvrez le rapport dans le dossier rapports avant de decider. Il indique, pour chaque jalon, si le document correspondant est publie ou non."
