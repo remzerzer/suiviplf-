@@ -1,5 +1,5 @@
 {
-  "version": "1.2",
+  "version": "1.3",
   "etabli_le": "2026-08-05",
   "etapes": {
     "conseil-ministres": {
@@ -108,7 +108,7 @@
       "cote": "gauche",
       "nature": "rupture",
       "fondement": "LOLF, art. 42",
-      "texte": "L'Assemblée a rejeté la première partie. La seconde partie ne pouvant être discutée sans elle, l'examen du texte s'arrête à ce stade et le Gouvernement saisit le Sénat.",
+      "texte": "L'Assemblée a rejeté la première partie. En vertu de l'article 42 de la loi organique, la seconde partie ne peut être mise en discussion sans elle : l'examen s'arrête à ce stade.",
       "phrase": "a vu sa première partie rejetée",
       "detection": "manuelle"
     },
@@ -130,7 +130,7 @@
       "cote": "gauche",
       "nature": "ordinaire",
       "fondement": "Constitution, art. 47",
-      "texte": "L'Assemblée a adopté l'ensemble du texte en première lecture. Il est transmis au Sénat, qui dispose à son tour d'un délai pour se prononcer.",
+      "texte": "L'Assemblée a adopté l'ensemble du texte en première lecture. Le Sénat peut désormais en être saisi, et disposera alors d'un délai pour se prononcer.",
       "phrase": "est adopté par l'Assemblée",
       "detection": "automatique"
     },
@@ -141,7 +141,7 @@
       "cote": "gauche",
       "nature": "rupture",
       "fondement": "Constitution, art. 47",
-      "texte": "L'Assemblée a rejeté le texte en première lecture. Ce rejet ne met pas fin à la procédure : le Gouvernement saisit le Sénat et la navette se poursuit normalement.",
+      "texte": "L'Assemblée a rejeté le texte. Un rejet ne met pas fin à la procédure : le texte peut poursuivre son chemin selon la phase où l'on se trouve.",
       "phrase": "a été rejeté par l'Assemblée",
       "detection": "manuelle"
     },
@@ -218,7 +218,7 @@
       "cote": "centre",
       "nature": "ordinaire",
       "fondement": "Constitution, art. 47 — LOLF, art. 40",
-      "texte": "Le texte a été transmis au Sénat, qui devient compétent pour l'examiner. Cette saisine ouvre le décompte du délai sénatorial : vingt jours en principe, quinze seulement si l'Assemblée a dépassé les siens.",
+      "texte": "Le texte a été transmis au Sénat, qui en devient saisi. Cette saisine ouvre le décompte du délai sénatorial : vingt jours en principe, quinze si l'Assemblée a dépassé le sien.",
       "phrase": "est transmis au Sénat",
       "detection": "automatique"
     },
@@ -273,7 +273,7 @@
       "cote": "droite",
       "nature": "rupture",
       "fondement": "Règlement du Sénat",
-      "texte": "Le Sénat a adopté une question préalable, procédure par laquelle il rejette le texte sans en discuter le contenu. Aucun amendement sénatorial n'est donc adopté, alors que ce sont les seuls que l'Assemblée pourra reprendre en lecture définitive.",
+      "texte": "Le Sénat a adopté une question préalable, procédure par laquelle il rejette le texte sans en discuter le contenu. Aucun amendement sénatorial n'est donc adopté, alors que ce sont les seuls que l'Assemblée peut reprendre en lecture définitive.",
       "phrase": "est rejeté par le Sénat sans discussion",
       "detection": "manuelle"
     },
@@ -284,7 +284,7 @@
       "cote": "droite",
       "nature": "rupture",
       "fondement": "Constitution, art. 47",
-      "texte": "Le Sénat a rejeté le texte après l'avoir discuté. La navette se poursuit et le texte revient à l'Assemblée.",
+      "texte": "Le Sénat a rejeté le texte après l'avoir discuté. Un rejet ne met pas fin à la procédure : la suite dépend de la phase où l'on se trouve.",
       "phrase": "est rejeté par le Sénat",
       "detection": "manuelle"
     },
@@ -328,7 +328,7 @@
       "cote": "centre",
       "nature": "rupture",
       "fondement": "Constitution, art. 45, al. 4",
-      "texte": "La commission mixte n'est pas parvenue à un texte commun. Le texte doit repartir en nouvelle lecture devant chaque chambre avant que le Gouvernement puisse demander à l'Assemblée de statuer définitivement.",
+      "texte": "La commission mixte n'est pas parvenue à un texte commun. L'article 45 de la Constitution ouvre alors au Gouvernement la faculté de demander à l'Assemblée de statuer définitivement, après une nouvelle lecture par chaque chambre.",
       "phrase": "achoppe en commission mixte paritaire",
       "detection": "manuelle"
     },
@@ -339,7 +339,7 @@
       "cote": "centre",
       "nature": "rupture",
       "fondement": "Constitution, art. 45, al. 4",
-      "texte": "La commission mixte était parvenue à un texte commun, mais l'une des deux chambres l'a rejeté. Les conséquences sont les mêmes qu'en cas de désaccord : une nouvelle lecture devient nécessaire dans chaque chambre avant toute lecture définitive.",
+      "texte": "La commission mixte était parvenue à un texte commun, mais l'une des deux chambres l'a rejeté. L'article 45 de la Constitution traite cette situation comme un désaccord.",
       "phrase": "voit le texte de la commission mixte rejeté",
       "detection": "manuelle"
     },
@@ -394,7 +394,7 @@
       "cote": "gauche",
       "nature": "ordinaire",
       "fondement": "Constitution, art. 45, al. 4",
-      "texte": "L'Assemblée a adopté le texte en nouvelle lecture. Il est transmis au Sénat pour la nouvelle lecture que la Constitution impose avant toute lecture définitive.",
+      "texte": "L'Assemblée a adopté le texte en nouvelle lecture. Une nouvelle lecture par le Sénat est requise avant que le Gouvernement puisse demander à l'Assemblée de statuer définitivement.",
       "phrase": "est adopté en nouvelle lecture à l'Assemblée",
       "detection": "automatique"
     },
@@ -427,7 +427,7 @@
       "cote": "droite",
       "nature": "ordinaire",
       "fondement": "Constitution, art. 45, al. 4",
-      "texte": "Le Sénat réexamine le texte. C'est la dernière fenêtre par laquelle une rédaction nouvelle peut entrer dans le texte final, puisque l'Assemblée ne pourra ensuite reprendre que des amendements adoptés par le Sénat.",
+      "texte": "Le Sénat réexamine le texte. C'est la dernière occasion pour une rédaction nouvelle d'entrer dans le texte final, l'Assemblée ne pouvant ensuite reprendre que des amendements adoptés par le Sénat.",
       "phrase": "est en nouvelle lecture au Sénat",
       "detection": "automatique"
     },
@@ -471,7 +471,7 @@
       "cote": "gauche",
       "nature": "rupture",
       "fondement": "Constitution, art. 45, al. 4",
-      "texte": "L'Assemblée, appelée à statuer définitivement, a rejeté le texte. Le projet est définitivement rejeté ; en matière budgétaire, les mécanismes de secours de l'article 45 de la loi organique deviennent le seul recours avant le 1er janvier.",
+      "texte": "L'Assemblée, appelée à statuer définitivement, a rejeté le texte. Le projet est définitivement rejeté. En matière budgétaire, les mécanismes de l'article 45 de la loi organique demeurent ouverts avant le 1er janvier.",
       "phrase": "est définitivement rejeté",
       "detection": "manuelle"
     },
@@ -482,7 +482,7 @@
       "cote": "centre",
       "nature": "secours",
       "fondement": "LOLF, art. 45, 1°",
-      "texte": "Faute d'adoption prévisible avant la fin de l'année, le Gouvernement a demandé à l'Assemblée un vote séparé sur l'ensemble de la première partie. Ce projet partiel est transmis au Sénat en procédure accélérée et doit être demandé avant le 11 décembre.",
+      "texte": "Le Gouvernement a demandé à l'Assemblée un vote séparé sur l'ensemble de la première partie. L'article 45 de la loi organique enferme cette demande avant le 11 décembre et prévoit une transmission au Sénat en procédure accélérée.",
       "phrase": "fait l'objet d'un vote séparé de sa première partie",
       "detection": "manuelle"
     },
@@ -526,7 +526,7 @@
       "cote": "centre",
       "nature": "secours",
       "fondement": "Constitution, art. 47, al. 4 — LOLF, art. 45",
-      "texte": "Le Gouvernement a ouvert par décret les crédits limités aux services votés, c'est-à-dire au minimum jugé indispensable pour poursuivre les services publics dans les conditions approuvées l'année précédente. La discussion du projet se poursuit.",
+      "texte": "Le Gouvernement a ouvert par décret les crédits limités aux services votés, c'est-à-dire au minimum jugé indispensable pour poursuivre les services publics dans les conditions approuvées l'année précédente. La publication de ces décrets n'interrompt pas la discussion du projet.",
       "phrase": "fonctionne sous le régime des services votés",
       "detection": "manuelle"
     },
@@ -570,7 +570,7 @@
       "cote": "centre",
       "nature": "controle",
       "fondement": "Constitution, art. 10",
-      "texte": "Le Président de la République a promulgué la loi, dans le délai de quinze jours suivant la transmission du texte définitivement adopté.",
+      "texte": "Le Président de la République a promulgué la loi. L'article 10 de la Constitution lui impartit quinze jours à compter de la transmission du texte définitivement adopté.",
       "phrase": "est promulgué",
       "detection": "manuelle"
     },
@@ -585,5 +585,6 @@
       "phrase": "est publié au Journal officiel",
       "detection": "manuelle"
     }
-  }
+  },
+  "role": "Base de rédaction pour l'IA, et texte affiché tant qu'aucun commentaire n'a été validé. Chaque fiche énonce la règle applicable, jamais la suite comme certaine."
 }
