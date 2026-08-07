@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PLF 2026 — rejeu de la procédure</title>
+<title>Suivi du projet de loi de finances</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300..600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -11,14 +11,73 @@
 :root{
   --fond:#EDF0F5;--surface:#FFFFFF;--encre:#0F151E;--graphite:#3F4550;--gris:#68717E;
   --trait:#C9D1DC;--bleu:#22368C;--bleu-pale:#E6EAF6;--rouge:#A3282B;--rouge-pale:#F7E9E9;
+  --ocre:#7A5A16;--ocre-pale:#F4EEDE;--ocre-trait:#D9C9A0;
+}
+/* Un dossier distinct a son propre decor : fond plus chaud, traits plus
+   sourds. Les couleurs des deux chambres, elles, ne changent pas. */
+body[data-vue="annexe"]{
+  --fond:#F3EFE4;--surface:#FFFDF8;--trait:#DCD2BC;--gris:#7A7263;--graphite:#4A4438;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--fond);color:var(--encre);
-  font-family:"Newsreader",Georgia,"Times New Roman",serif;font-size:16.5px;line-height:1.6}
+  font-family:"Newsreader",Georgia,"Times New Roman",serif;font-size:16.5px;line-height:1.6;
+  transition:background-color .4s ease}
 .page{max-width:1000px;margin:0 auto;padding:0 20px 96px}
+[hidden]{display:none!important}
 
-.barre{background:var(--encre);color:#fff;margin:0 -20px;padding:14px 20px;
+/* Fil d Ariane : ou l on se trouve, et par ou revenir. */
+.ariane{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:22px 0 4px;
+  font-family:"DM Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.08em}
+.ariane button{font-family:inherit;font-size:inherit;letter-spacing:inherit;background:none;
+  border:none;padding:0;color:var(--gris);cursor:pointer;text-underline-offset:3px}
+.ariane button:hover{color:var(--encre);text-decoration:underline}
+.ariane button:focus-visible{outline:2px solid var(--encre);outline-offset:2px}
+.ariane .sep{color:var(--trait)}
+.ariane .ici{color:var(--encre)}
+
+.ecran{animation:entre .3s cubic-bezier(.2,.7,.3,1) both}
+@keyframes entre{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.tete-ecran{padding:46px 0 30px;border-bottom:1px solid var(--trait)}
+.tete-ecran.centre{text-align:center}
+.sur-titre{font-family:"DM Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gris);margin:0 0 12px}
+.titre-page{font-family:"Newsreader",Georgia,serif;font-weight:600;
+  font-size:clamp(30px,4.6vw,46px);line-height:1.06;letter-spacing:-.015em;margin:0}
+.sous-titre{color:var(--graphite);margin:12px 0 0;font-size:17.5px;max-width:60ch}
+.tete-ecran.centre .sous-titre{margin-left:auto;margin-right:auto}
+
+/* Cartes de navigation : millesimes, sections. */
+.cartes{display:grid;gap:14px;margin-top:30px}
+.cartes.deux{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.cartes.trois{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.bloc{display:block;width:100%;text-align:left;background:var(--surface);
+  border:1px solid var(--trait);padding:20px 22px;font-family:inherit;color:inherit;
+  cursor:pointer;transition:border-color .15s,transform .15s}
+.bloc:hover{border-color:var(--graphite)}
+.bloc:focus-visible{outline:2px solid var(--encre);outline-offset:2px}
+.bloc .etat{font-family:"DM Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gris);display:block;margin-bottom:7px}
+.bloc .titre{font-family:"Newsreader",Georgia,serif;font-weight:600;font-size:21px;
+  line-height:1.2;display:block}
+.bloc .detail{color:var(--graphite);font-size:15px;display:block;margin-top:8px;line-height:1.5}
+.bloc .aller{font-family:"DM Mono",ui-monospace,monospace;font-size:11px;color:var(--bleu);
+  display:block;margin-top:14px}
+.bloc.encours{border-color:var(--bleu);background:var(--bleu-pale)}
+.bloc.encours .etat{color:var(--bleu)}
+.bloc.archive .etat{color:var(--ocre)}
+.bloc.archive .aller{color:var(--ocre)}
+.bloc[aria-disabled="true"]{cursor:default;background:transparent;border-style:dashed;opacity:.68}
+.bloc[aria-disabled="true"]:hover{border-color:var(--trait)}
+.bloc[aria-disabled="true"] .aller{color:var(--gris)}
+
+.vide-section{background:var(--surface);border:1px solid var(--trait);
+  border-left:3px solid var(--gris);padding:22px 24px;margin-top:30px;max-width:62ch}
+.vide-section p{margin:0 0 12px}
+.vide-section p:last-child{margin-bottom:0}
+
+.barre{background:var(--encre);color:#fff;margin:14px -20px 0;padding:14px 20px;
   display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
 .barre .tag{font-family:"DM Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.14em;
   text-transform:uppercase;border:1px solid rgba(255,255,255,.4);padding:3px 8px;flex:0 0 auto}
@@ -30,17 +89,32 @@ body{margin:0;background:var(--fond);color:var(--encre);
 .barre button:hover{background:#28313F}
 .barre button:focus-visible,.barre input:focus-visible{outline:2px solid #fff;outline-offset:2px}
 
-.statut{padding:52px 0 34px;border-bottom:1px solid var(--trait);text-align:center}
-.titre-page{font-family:"Newsreader",Georgia,serif;font-weight:600;
-  font-size:clamp(30px,4.6vw,46px);line-height:1.06;letter-spacing:-.015em;margin:0 0 14px}
+.retour{margin:0 -20px;padding:11px 20px;background:#EFE7D3;border-bottom:1px solid var(--ocre-trait);
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.retour button{font-family:"Newsreader",Georgia,serif;font-size:13.5px;background:transparent;
+  border:1px solid #C7B27E;color:#5C430F;padding:6px 13px;cursor:pointer}
+.retour button:hover{background:#E5D9BB}
+.retour button:focus-visible{outline:2px solid var(--ocre);outline-offset:2px}
+.retour .mention{font-family:"DM Mono",ui-monospace,monospace;font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ocre)}
+
+.statut{padding:48px 0 32px;border-bottom:1px solid var(--trait);text-align:center}
+body[data-vue="annexe"] .statut .titre-page{font-size:clamp(23px,3.2vw,32px)}
 .fil{font-family:"DM Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--gris);margin:0 0 30px}
+  text-transform:uppercase;color:var(--gris);margin:0 0 28px}
+body[data-vue="annexe"] .fil{color:var(--ocre)}
 .phrase{font-family:"Newsreader",Georgia,serif;
   font-weight:400;font-size:clamp(24px,3.6vw,36px);line-height:1.16;letter-spacing:-.008em;
   margin:0 auto;max-width:22ch;color:var(--graphite)}
 .phrase .l{display:block}
 .phrase .l.an{color:var(--bleu)}
 .phrase .l.senat{color:var(--rouge)}
+.attente{max-width:46ch;margin:26px auto 0;font-size:15.5px;color:var(--gris);line-height:1.6}
+
+.vue.entre-d{animation:entreD .34s cubic-bezier(.2,.7,.3,1) both}
+.vue.entre-g{animation:entreG .34s cubic-bezier(.2,.7,.3,1) both}
+@keyframes entreD{from{opacity:0;transform:translateX(34px)}to{opacity:1;transform:none}}
+@keyframes entreG{from{opacity:0;transform:translateX(-34px)}to{opacity:1;transform:none}}
 
 .couloirs{display:flex;justify-content:space-between;align-items:center;margin:46px 0 8px}
 .couloir{font-family:"Newsreader",Georgia,serif;font-weight:600;
@@ -99,52 +173,120 @@ body{margin:0;background:var(--fond);color:var(--encre);
 .cle{font-family:"DM Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--gris);display:block;margin-bottom:2px}
 .fiche a{color:var(--bleu);text-underline-offset:2px;word-break:break-word}
-.pied{margin-top:48px;padding-top:16px;border-top:1px solid var(--trait);
-  font-family:"DM Mono",ui-monospace,monospace;font-size:11.5px;line-height:1.9;color:var(--gris)}
-.pied a{color:var(--gris);text-underline-offset:2px}
-.pied a:hover{color:var(--bleu)}
-.pied .sep{opacity:.45;padding:0 6px}
 .absent{color:var(--gris);font-style:italic}
 
+.pied{margin-top:48px;padding-top:16px;border-top:1px solid var(--trait);
+  font-family:"DM Mono",ui-monospace,monospace;font-size:11.5px;line-height:1.9;color:var(--gris)}
+.pied .sep{opacity:.45;padding:0 6px}
+
+/* Deviation : le dossier distinct quitte la route principale.
+   Cliquer ouvre sa propre frise, il ne se deplie pas sur place. */
+.jalon.devi::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:5px;
+  margin-left:-2.5px;background:var(--fond);z-index:1}
+.jalon.devi::after{content:"";position:absolute;left:50%;top:0;bottom:0;
+  border-left:1px dashed var(--trait);margin-left:-.5px;z-index:1}
+.jalon.devi .carte{grid-column:1;padding-right:34px;text-align:right}
+.jalon.devi .tete{background:var(--ocre-pale);border-color:var(--ocre-trait)}
+.jalon.devi .tete:hover{border-color:var(--ocre)}
+.jalon.devi .quand{color:var(--ocre)}
+.jalon.devi .aller{font-family:"DM Mono",ui-monospace,monospace;font-size:11.5px;
+  color:var(--ocre);margin:8px 0 0}
+.jalon.devi[data-etat="cours"] .tete{box-shadow:0 2px 0 0 var(--ocre);border-color:var(--ocre)}
+.jalon.devi[data-etat="venir"] .tete{background:transparent;border-style:dashed}
+.embranchement{grid-column:2;justify-self:center;align-self:start;margin-top:8px;
+  width:60px;height:40px;overflow:visible;position:relative;z-index:2}
 
 @media (max-width:720px){
   .couloirs{display:none}
   .navette::before{left:6px}
   .jalon{grid-template-columns:26px 1fr}
-  .carte,.jalon[data-cote="droite"] .carte,.jalon[data-cote="centre"] .carte{
+  .carte,.jalon[data-cote="droite"] .carte,.jalon[data-cote="centre"] .carte,
+  .jalon.devi .carte{
     grid-column:2;padding:0;text-align:left;max-width:none;margin:0}
   .puce{grid-column:1;grid-row:1;justify-self:start}
   .jalon[data-etat="cours"] .puce{margin-left:-3px}
   .phrase{max-width:none}
+  .jalon.devi::before,.jalon.devi::after{left:6px}
+  .jalon.devi .tete{border-left:3px solid var(--ocre)}
+  .embranchement{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
-<body>
+<body data-vue="principal">
 <div class="page">
 
-<div class="barre">
-  <span class="tag">Rejeu des données réelles</span>
-  <div class="curseur">
-    <label for="curseur" class="jour" id="etiquette">14 octobre 2025</label>
-    <input type="range" id="curseur" min="0" max="129" value="64" aria-label="Se placer à une date">
-  </div>
-  <button type="button" id="rejouer">Rejouer la procédure</button>
-</div>
+<nav class="ariane" id="ariane" aria-label="Fil d'Ariane" hidden></nav>
 
-<section class="statut">
-  <h1 class="titre-page" id="titrePage">Suivi du projet de loi de finances</h1>
-  <p class="fil" id="fil">Phase parlementaire</p>
-  <p class="phrase" id="phrase"></p>
+<!-- Ecran 1 : accueil -->
+<section class="ecran" id="ecAccueil">
+  <div class="tete-ecran">
+    <p class="sur-titre">Accueil</p>
+    <h1 class="titre-page">Suivi du projet de loi de finances</h1>
+  </div>
+  <div class="cartes deux" id="accueilCartes"></div>
 </section>
 
-<div class="couloirs">
-  <span class="couloir gauche">Assemblée nationale</span>
-  <span class="couloir milieu"></span>
-  <span class="couloir droite">Sénat</span>
-</div>
+<!-- Ecran 2 : archives -->
+<section class="ecran" id="ecArchives" hidden>
+  <div class="tete-ecran">
+    <p class="sur-titre">Archives</p>
+    <h1 class="titre-page">Millésimes archivés</h1>
+    <p class="sous-titre">Ces millésimes ne sont plus mis à jour. Leurs données sont figées à la date de dernière vérification indiquée en bas de page.</p>
+  </div>
+  <div class="cartes deux" id="archivesCartes"></div>
+</section>
 
-<ol class="navette" id="navette"></ol>
+<!-- Ecran 3 : sommaire d un millesime -->
+<section class="ecran" id="ecMillesime" hidden>
+  <div class="tete-ecran">
+    <p class="sur-titre" id="mSur">—</p>
+    <h1 class="titre-page" id="mTitre">—</h1>
+    <p class="sous-titre" id="mSous"></p>
+  </div>
+  <div class="cartes trois" id="mCartes"></div>
+</section>
+
+<!-- Ecran 4a : une section sans donnees -->
+<section class="ecran" id="ecSection" hidden>
+  <div class="tete-ecran">
+    <p class="sur-titre" id="sSur">—</p>
+    <h1 class="titre-page" id="sTitre">—</h1>
+  </div>
+  <div class="vide-section" id="sCorps"></div>
+</section>
+
+<!-- Ecran 4b : la chronologie -->
+<section class="ecran" id="ecChrono" hidden>
+  <div class="barre" id="barre">
+    <span class="tag" id="tagVue">Rejeu des données réelles</span>
+    <div class="curseur">
+      <label for="curseur" class="jour" id="etiquette">—</label>
+      <input type="range" id="curseur" min="0" max="1" value="1" aria-label="Se placer à une date">
+    </div>
+    <button type="button" id="rejouer">Rejouer la procédure</button>
+  </div>
+
+  <div class="retour" id="retour" hidden>
+    <button type="button" id="btnRetour">← Revenir au projet de loi de finances</button>
+    <span class="mention">Vous consultez un texte distinct</span>
+  </div>
+
+  <div class="vue" id="vue">
+    <section class="statut">
+      <h1 class="titre-page" id="titrePage">—</h1>
+      <p class="fil" id="fil">—</p>
+      <p class="phrase" id="phrase"></p>
+      <p class="attente" id="attente" hidden></p>
+    </section>
+    <div class="couloirs" id="couloirs">
+      <span class="couloir gauche">Assemblée nationale</span>
+      <span class="couloir milieu"></span>
+      <span class="couloir droite">Sénat</span>
+    </div>
+    <ol class="navette" id="navette"></ol>
+  </div>
+</section>
 
 <footer class="pied" id="pied"></footer>
 
@@ -154,45 +296,260 @@ body{margin:0;background:var(--fond);color:var(--encre);
 (function(){
   "use strict";
 
-  var DEPOT = new Date(2025,9,14);
-  var MAX = 129;
+  /* A date egale, les donnees ouvertes ne disent pas dans quel ordre les
+     actes se sont produits. Ce rang reconstitue l ordre de la procedure. */
+  var RANG = {
+    "AN1-DEPOT":1,"AN1-COM-AVIS-RAPPORT":2,"AN1-COM-FOND-RAPPORT":3,
+    "AN1-DEBATS-SEANCE":4,"AN1-DEBATS-DEC":5,
+    "SN1-DEPOT":6,"SN1-COM-FOND-RAPPORT":7,"SN1-DEBATS-SEANCE":8,"SN1-DEBATS-DEC":9,
+    "CMP-SAISIE":10,"CMP-COM-RAPPORT-AN":11,"CMP-DEC":12,
+    "ANNLEC-DEPOT":13,"ANNLEC-COM-FOND-RAPPORT":14,"ANNLEC-DEBATS-SEANCE":15,
+    "ANNLEC-DGVT":16,"ANNLEC-MOTION":17,"ANNLEC-MOTION-VOTE":18,"ANNLEC-DEBATS-DEC":19,
+    "SNNLEC-DEPOT":20,"SNNLEC-COM-FOND-RAPPORT":21,"SNNLEC-DEBATS-DEC":22,
+    "ANLDEF-DEPOT":23,"ANLDEF-DGVT":24,"ANLDEF-MOTION":25,"ANLDEF-MOTION-VOTE":26,
+    "ANLDEF-DEBATS-DEC":27,
+    "CC-SAISIE-PM":28,"CC-SAISIE-AN":29,"CC-CONCLUSION":30,"PROM-PUB":31
+  };
 
-  var E = [];
+  var SECTIONS = [
+    {cle:"chronologie", nom:"Chronologie",
+     detail:"Le parcours du texte, acte par acte, avec le lien vers chaque document officiel."},
+    {cle:"articles", nom:"Articles du PLF",
+     detail:"Les dispositions fiscales et de droit des affaires, article par article, avec leur raison d'être."},
+    {cle:"amendements", nom:"Amendements",
+     detail:"Les amendements déposés, leur auteur, leur objet et le sort qui leur a été réservé."}
+  ];
 
+  var MILL=[], CACHE={}, CAT=null, MCLE=null;
+  var VUES={}, VUE="principal", CURSEURS={}, OUVERTS={}, anim=null;
 
   function dt(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2]);}
   function ajout(d,n){var x=new Date(d.getTime());x.setDate(x.getDate()+n);return x;}
   function fr(d){return d.toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"});}
   function ecart(a,b){return Math.round((b-a)/86400000);}
+  function jour(a,b){return Math.round((b-a)/86400000);}
+  function ech(t){return String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");}
+  function montrer(el,oui){ if(oui) el.removeAttribute("hidden"); else el.setAttribute("hidden",""); }
+  function $(id){ return document.getElementById(id); }
 
-  var elC=document.getElementById("curseur"),elE=document.getElementById("etiquette"),
-      elP=document.getElementById("phrase"),elN=document.getElementById("navette"),
-      elRj=document.getElementById("rejouer");
+  var elC=$("curseur"),elE=$("etiquette"),elP=$("phrase"),elN=$("navette"),elRj=$("rejouer"),
+      elVue=$("vue"),elRetour=$("retour"),elTag=$("tagVue"),elTitre=$("titrePage"),elFil=$("fil"),
+      elBarre=$("barre"),elCouloirs=$("couloirs"),elAttente=$("attente"),elAriane=$("ariane");
 
-  var ouverts={},anim=null;
+  var ECRANS={accueil:$("ecAccueil"), archives:$("ecArchives"),
+              millesime:$("ecMillesime"), section:$("ecSection"), chrono:$("ecChrono")};
+
+  function trouve(cle){ var r=null; MILL.forEach(function(m){ if(m.cle===cle) r=m; }); return r; }
+  function sectionDe(cle){ var r=null; SECTIONS.forEach(function(s){ if(s.cle===cle) r=s; }); return r; }
+  function dispo(m,cle){
+    var s = m.sections && m.sections[cle];
+    if(!s) return false;
+    if(cle==="chronologie") return !!(s.sequences && s.sequences.length);
+    return !!s;
+  }
+
+  /* ---------- Adresse ---------- */
+
+  function ecrireAdresse(chemin){
+    try{ if(history.replaceState) history.replaceState(null,"","#"+chemin); }catch(e){}
+  }
+  function lireAdresse(){
+    var h=""; try{ h=(location.hash||"").replace(/^#\/?/,""); }catch(e){}
+    return h.split("/").filter(Boolean);
+  }
+
+  /* ---------- Ecrans ---------- */
+
+  function afficher(nom){
+    Object.keys(ECRANS).forEach(function(k){ montrer(ECRANS[k], k===nom); });
+    var e=ECRANS[nom];
+    e.classList.remove("ecran"); void e.offsetWidth; e.classList.add("ecran");
+    if(window.scrollY>0) window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function ariane(parts){
+    if(!parts.length){ montrer(elAriane,false); return; }
+    montrer(elAriane,true);
+    elAriane.innerHTML = parts.map(function(p,i){
+      var fin = (i===parts.length-1);
+      var el = fin ? '<span class="ici">'+ech(p.nom)+'</span>'
+                   : '<button type="button" data-va="'+ech(p.va)+'">'+ech(p.nom)+'</button>';
+      return (i? '<span class="sep">/</span> ':'') + el;
+    }).join(" ");
+  }
+
+  function piedSimple(){
+    $("pied").innerHTML = "Sources : Assemblée nationale et Sénat, licence ouverte Etalab"+
+      '<span class="sep">·</span>Les contenus produits automatiquement ne constituent pas un conseil juridique';
+  }
+  function piedDonnees(verif, derniere){
+    $("pied").innerHTML =
+      'Données vérifiées le <b>' + (verif || "non renseignée") + '</b>' +
+      (derniere ? '<span class="sep">·</span>dernier évènement constaté le <b>' + fr(derniere) + '</b>' : '') +
+      '<br>Sources : Assemblée nationale et Sénat, licence ouverte Etalab';
+  }
+
+  function allerAccueil(){
+    MCLE=null;
+    document.body.setAttribute("data-vue","principal");
+    var encours=[], arch=[];
+    MILL.forEach(function(m){ (m.etat==="archive"?arch:encours).push(m); });
+
+    var h = encours.map(function(m){
+      return '<button type="button" class="bloc encours" data-m="'+ech(m.cle)+'">'+
+        '<span class="etat">'+ech(m.etat||"en cours")+'</span>'+
+        '<span class="titre">'+ech(m.titre)+'</span>'+
+        '<span class="detail">'+ech(m.sous_titre||"")+'</span>'+
+        '<span class="aller">Consulter →</span></button>';
+    }).join("");
+
+    h += '<button type="button" class="bloc archive" data-va="archives">'+
+      '<span class="etat">Archives</span>'+
+      '<span class="titre">Millésimes précédents</span>'+
+      '<span class="detail">'+arch.length+' millésime'+(arch.length>1?"s":"")+
+      ' archivé'+(arch.length>1?"s":"")+', figé'+(arch.length>1?"s":"")+' et consultable'+
+      (arch.length>1?"s":"")+'.</span>'+
+      '<span class="aller">Choisir une année →</span></button>';
+
+    $("accueilCartes").innerHTML=h;
+    ariane([]);
+    piedSimple();
+    afficher("accueil");
+    document.title="Suivi du projet de loi de finances";
+    ecrireAdresse("/");
+  }
+
+  function allerArchives(){
+    MCLE=null;
+    document.body.setAttribute("data-vue","principal");
+    var arch=MILL.filter(function(m){ return m.etat==="archive"; });
+    $("archivesCartes").innerHTML = arch.length
+      ? arch.map(function(m){
+          return '<button type="button" class="bloc archive" data-m="'+ech(m.cle)+'">'+
+            '<span class="etat">'+ech(m.onglet||m.cle)+'</span>'+
+            '<span class="titre">'+ech(m.titre)+'</span>'+
+            '<span class="detail">'+ech(m.sous_titre||"")+'</span>'+
+            '<span class="aller">Consulter →</span></button>';
+        }).join("")
+      : '<p class="sous-titre">Aucun millésime archivé pour le moment.</p>';
+    ariane([{nom:"Accueil",va:"accueil"},{nom:"Archives"}]);
+    piedSimple();
+    afficher("archives");
+    ecrireAdresse("/archives");
+  }
+
+  function allerMillesime(cle){
+    var m=trouve(cle); if(!m) return allerAccueil();
+    MCLE=cle;
+    document.body.setAttribute("data-vue","principal");
+    $("mSur").textContent = (m.etat==="archive") ? "Millésime archivé" : "Millésime en cours";
+    $("mTitre").textContent = m.titre;
+    $("mSous").textContent = m.sous_titre||"";
+    $("mCartes").innerHTML = SECTIONS.map(function(s){
+      var ok = dispo(m,s.cle);
+      return '<button type="button" class="bloc" data-s="'+ech(s.cle)+'" '+
+        (ok?'':'aria-disabled="true" ')+'>'+
+        '<span class="etat">'+(ok?"Disponible":"À venir")+'</span>'+
+        '<span class="titre">'+ech(s.nom)+'</span>'+
+        '<span class="detail">'+ech(s.detail)+'</span>'+
+        '<span class="aller">'+(ok?"Ouvrir →":"Pas encore publié")+'</span></button>';
+    }).join("");
+    ariane([{nom:"Accueil",va:"accueil"},
+            (m.etat==="archive"?{nom:"Archives",va:"archives"}:null),
+            {nom:m.onglet||m.cle}].filter(Boolean));
+    piedSimple();
+    afficher("millesime");
+    document.title = m.titre;
+    ecrireAdresse("/"+cle);
+  }
+
+  function allerSection(cle, scle){
+    var m=trouve(cle); if(!m) return allerAccueil();
+    var s=sectionDe(scle); if(!s) return allerMillesime(cle);
+    MCLE=cle;
+    if(scle==="chronologie" && dispo(m,"chronologie")) return allerChrono(m);
+
+    document.body.setAttribute("data-vue","principal");
+    $("sSur").textContent = m.onglet||m.cle;
+    $("sTitre").textContent = s.nom;
+    $("sCorps").innerHTML =
+      '<p>'+ech(s.detail)+'</p>'+
+      '<p>Cette section n\'est pas encore publiée pour ce millésime. Aucune donnée n\'a été collectée à ce jour.</p>'+
+      '<p>Elle s\'ouvrira d\'elle-même dès que ses données seront disponibles.</p>';
+    ariane([{nom:"Accueil",va:"accueil"},
+            (m.etat==="archive"?{nom:"Archives",va:"archives"}:null),
+            {nom:m.onglet||m.cle, va:"m:"+m.cle},
+            {nom:s.nom}].filter(Boolean));
+    piedSimple();
+    afficher("section");
+    ecrireAdresse("/"+cle+"/"+scle);
+  }
+
+  /* ---------- Chronologie ---------- */
+
+  function allerChrono(m){
+    var conf = m.sections.chronologie;
+    ariane([{nom:"Accueil",va:"accueil"},
+            (m.etat==="archive"?{nom:"Archives",va:"archives"}:null),
+            {nom:m.onglet||m.cle, va:"m:"+m.cle},
+            {nom:"Chronologie"}].filter(Boolean));
+    afficher("chrono");
+    ecrireAdresse("/"+m.cle+"/chronologie");
+
+    var suite = CACHE[m.cle] ? Promise.resolve(CACHE[m.cle])
+      : premierDisponible(conf.sequences||[]).then(function(d){ CACHE[m.cle]=d; return d; });
+
+    return suite.then(function(d){
+      batir(m,d);
+      VUE="principal";
+      ouvrirVue("principal", null);
+    }).catch(function(){
+      elP.innerHTML='<span class="l">Données indisponibles</span><span class="l">pour ce millésime.</span>';
+      montrer(elBarre,false); montrer(elCouloirs,false); elN.innerHTML="";
+    });
+  }
+
+  function courant(){ return VUES[VUE] || {jalons:[], depot:new Date(), max:1, vide:true}; }
 
   function rendu(){
-    var j=parseInt(elC.value,10), auj=ajout(DEPOT,j);
+    var V=courant();
+
+    if(V.vide){
+      elP.innerHTML='<span class="l">'+ech(V.titreCourt||"Ce texte")+'</span>'+
+                    '<span class="l">n\'a pas encore été déposé.</span>';
+      elAttente.textContent="Aucun acte n'a été enregistré à ce jour dans les données ouvertes "+
+        "des deux assemblées. La chronologie s'affichera dès le premier acte publié.";
+      montrer(elAttente,true); montrer(elBarre,false); montrer(elCouloirs,false);
+      elN.innerHTML="";
+      return;
+    }
+    montrer(elAttente,false); montrer(elBarre,true); montrer(elCouloirs,true);
+
+    var j=parseInt(elC.value,10), auj=ajout(V.depot,j);
     elE.textContent=fr(auj);
 
-    var dernier=-1;
-    E.forEach(function(e,i){ if(dt(e.d)<=auj) dernier=i; });
+    var L=V.jalons, ouverts=OUVERTS[VUE]||(OUVERTS[VUE]={});
+    var dernier=-1, dernierJ=-1;
+    L.forEach(function(e,i){
+      if(dt(e.d)<=auj){ dernier=i; if(e.type!=="d") dernierJ=i; }
+    });
 
-    if(dernier<0){
-      elP.innerHTML='<span class="l">Le PLF 2026</span><span class="l">n\'est pas encore déposé.</span>';
+    if(dernierJ<0){
+      elP.innerHTML='<span class="l">Ce texte</span><span class="l">n\'est pas encore déposé.</span>';
     }else{
-      var e=E[dernier], cls=e.ch==="an"?"an":"senat";
+      var e=L[dernierJ], cls=e.ch==="an"?"an":"senat";
       elP.innerHTML='<span class="l">Le texte</span><span class="l '+cls+'">'+e.ph+".</span>";
     }
 
-    elN.innerHTML=E.map(function(e,i){
+    elN.innerHTML=L.map(function(e,i){
       var etat = i<dernier?"fait":(i===dernier?"cours":"venir");
       var o=!!ouverts[i];
+      if(e.type==="d") return blocDeviation(e,etat);
       return '<li class="jalon" data-cote="'+e.co+'" data-chambre="'+e.ch+'" data-etat="'+etat+'">'+
         '<span class="puce" aria-hidden="true"></span>'+
         '<div class="carte">'+
           '<button class="tete" type="button" aria-expanded="'+o+'" data-i="'+i+'">'+
-            '<span class="quand">'+fr(dt(e.d))+' · jour '+ecart(DEPOT,dt(e.d))+'</span>'+
+            '<span class="quand">'+fr(dt(e.d))+' · jour '+ecart(V.depot,dt(e.d))+'</span>'+
             '<p class="nom">'+e.nom+'</p>'+
             '<p class="doc">'+e.doc+'</p>'+
           '</button>'+
@@ -204,30 +561,185 @@ body{margin:0;background:var(--fond);color:var(--encre);
           '</div>':'')+
         '</div></li>';
     }).join("");
-
   }
+
+  /* La deviation n est pas une etape : c est un panneau qui mene ailleurs. */
+  function blocDeviation(e,etat){
+    var couleur = etat==="venir" ? "#C9D1DC" : "#7A5A16";
+    var svg='<svg class="embranchement" viewBox="0 0 60 40" aria-hidden="true">'+
+      '<path d="M30 0 C30 19 25 26 2 26" fill="none" stroke="'+couleur+'" stroke-width="2"/>'+
+      '</svg>';
+    return '<li class="jalon devi" data-cote="gauche" data-etat="'+etat+'">'+svg+
+      '<div class="carte">'+
+        '<button class="tete" type="button" data-aller="'+ech(e.cle)+'">'+
+          '<span class="quand">Déviation · texte distinct</span>'+
+          '<p class="nom">'+e.court+'</p>'+
+          '<p class="doc">'+e.n+' étapes, du '+fr(dt(e.d))+' au '+fr(dt(e.dfin))+'</p>'+
+          '<p class="aller">Voir sa procédure →</p>'+
+        '</button></div></li>';
+  }
+
+  function animerVue(sens){
+    elVue.classList.remove("entre-d","entre-g");
+    void elVue.offsetWidth;
+    elVue.classList.add(sens==="g"?"entre-g":"entre-d");
+  }
+
+  function ouvrirVue(cle, sens){
+    if(!VUES[cle]) return;
+    if(anim){clearInterval(anim);anim=null;elRj.textContent="Rejouer la procédure";}
+    if(VUES[VUE] && !VUES[VUE].vide) CURSEURS[VUE]=parseInt(elC.value,10);
+    VUE=cle;
+    var V=VUES[cle];
+    document.body.setAttribute("data-vue", V.annexe ? "annexe" : "principal");
+    elTitre.textContent=V.titre;
+    elFil.textContent=V.sousTitre;
+    elTag.textContent = V.annexe ? "Texte distinct" : "Rejeu des données réelles";
+    montrer(elRetour, !!V.annexe);
+    if(!V.vide){
+      elC.max=V.max;
+      elC.value = (CURSEURS[cle]===undefined) ? V.max : CURSEURS[cle];
+    }
+    if(sens) animerVue(sens);
+    rendu();
+    if(sens && window.scrollY>0) window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function abrege(t){
+    if(t.length <= 58) return t;
+    var s=t.slice(0,58), k=s.lastIndexOf(' ');
+    return (k>30 ? s.slice(0,k) : s) + '…';
+  }
+
+  /* Construit les vues d un millesime a partir de son fichier de sequence. */
+  function batir(m, d){
+    VUES={}; CURSEURS={}; OUVERTS={};
+    var principal = d.dossier || '';
+
+    var brut = (d.sequence || []).map(function(ev){
+      var c = CAT[ev.etape];
+      if(!c) return null;
+      var ctx = ev.contexte || {};
+      return {
+        type:'j', d: ev.date, code: ctx.code_acte || '',
+        dossier: ctx.dossier || principal,
+        ch: c.chambre === 'senat' ? 'senat' : 'an',
+        co: c.cote, nom: c.nom, doc: ev.doc || '',
+        txt: c.texte + (ev.precision ? ' ' + ev.precision : ''),
+        lien: ev.lien || '', ph: c.phrase
+      };
+    }).filter(Boolean);
+
+    brut.sort(function(a,b){
+      if(a.d !== b.d) return a.d < b.d ? -1 : 1;
+      return (RANG[a.code]||50) - (RANG[b.code]||50);
+    });
+
+    /* Avant le depot, la sequence est vide : on le dit, et le curseur de
+       rejeu disparait, n ayant rien a parcourir. */
+    if(!brut.length){
+      piedDonnees(d.derniere_verification, null);
+      VUES.principal = {titre:m.titre, sousTitre:m.sous_titre,
+        titreCourt: d.dossier || m.titre, jalons:[], vide:true, annexe:false};
+      return;
+    }
+
+    /* Tout jalon rattache a un autre dossier que le dossier principal
+       quitte la route et forme une vue distincte, annoncee a sa date. */
+    var annexes={}, ordre=[];
+    brut.forEach(function(x){
+      if(x.dossier === principal) return;
+      if(!annexes[x.dossier]){ annexes[x.dossier]=[]; ordre.push(x.dossier); }
+      annexes[x.dossier].push(x);
+    });
+
+    function panneau(t){
+      var g=annexes[t];
+      return {type:'d', cle:t, d:g[0].d, dfin:g[g.length-1].d, court:abrege(t), n:g.length};
+    }
+
+    var principale=[], pose={};
+    brut.forEach(function(x){
+      if(x.dossier !== principal) return;
+      ordre.forEach(function(t){
+        if(pose[t]) return;
+        if(annexes[t][0].d <= x.d){ principale.push(panneau(t)); pose[t]=true; }
+      });
+      principale.push(x);
+    });
+    ordre.forEach(function(t){ if(!pose[t]) principale.push(panneau(t)); });
+
+    var seuls = brut.filter(function(x){ return x.dossier === principal; });
+    var p = (d.depot || seuls[0].d).split('-');
+    var depotP = new Date(+p[0], +p[1]-1, +p[2]);
+    var derniere = dt(seuls[seuls.length-1].d);
+
+    VUES.principal = {titre:m.titre, sousTitre:m.sous_titre, jalons:principale,
+      depot:depotP, max: Math.max(1, jour(depotP, derniere) + 3), annexe:false};
+
+    ordre.forEach(function(t){
+      var g=annexes[t], dep=dt(g[0].d), der=dt(g[g.length-1].d);
+      VUES[t] = {titre:t, sousTitre:"Texte distinct · procédure parallèle",
+        jalons:g, depot:dep, max: Math.max(1, jour(dep, der) + 2), annexe:true};
+    });
+
+    piedDonnees(d.derniere_verification, derniere);
+  }
+
+  /* ---------- Interactions ---------- */
+
+  function va(code){
+    if(code==="accueil") return allerAccueil();
+    if(code==="archives") return allerArchives();
+    if(code.indexOf("m:")===0) return allerMillesime(code.slice(2));
+  }
+
+  elAriane.addEventListener("click",function(ev){
+    var b=ev.target.closest("button[data-va]"); if(!b) return;
+    va(b.getAttribute("data-va"));
+  });
+
+  $("accueilCartes").addEventListener("click",function(ev){
+    var b=ev.target.closest("button"); if(!b) return;
+    if(b.getAttribute("data-va")) return va(b.getAttribute("data-va"));
+    if(b.getAttribute("data-m")) return allerMillesime(b.getAttribute("data-m"));
+  });
+  $("archivesCartes").addEventListener("click",function(ev){
+    var b=ev.target.closest("button[data-m]"); if(!b) return;
+    allerMillesime(b.getAttribute("data-m"));
+  });
+  $("mCartes").addEventListener("click",function(ev){
+    var b=ev.target.closest("button[data-s]"); if(!b) return;
+    if(b.getAttribute("aria-disabled")==="true") return;
+    allerSection(MCLE, b.getAttribute("data-s"));
+  });
 
   elC.addEventListener("input",rendu);
   elN.addEventListener("click",function(ev){
     var b=ev.target.closest(".tete");if(!b)return;
-    var i=b.getAttribute("data-i");ouverts[i]=!ouverts[i];rendu();
+    var cible=b.getAttribute("data-aller");
+    if(cible){ ouvrirVue(cible,"d"); return; }
+    var i=b.getAttribute("data-i");
+    var ouverts=OUVERTS[VUE]||(OUVERTS[VUE]={});
+    ouverts[i]=!ouverts[i];rendu();
   });
+  $("btnRetour").addEventListener("click",function(){ ouvrirVue("principal","g"); });
+
   elRj.addEventListener("click",function(){
     if(anim){clearInterval(anim);anim=null;elRj.textContent="Rejouer la procédure";return;}
-    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){elC.value=MAX;rendu();return;}
+    var M=courant().max;
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){elC.value=M;rendu();return;}
     elC.value=0;rendu();elRj.textContent="Arrêter";
+    var pas=Math.max(45, Math.min(260, Math.round(9000/Math.max(1,M))));
     anim=setInterval(function(){
       var v=parseInt(elC.value,10);
-      if(v>=MAX){clearInterval(anim);anim=null;elRj.textContent="Rejouer la procédure";return;}
+      if(v>=M){clearInterval(anim);anim=null;elRj.textContent="Rejouer la procédure";return;}
       elC.value=v+1;rendu();
-    },95);
+    },pas);
   });
 
-  function jour(a,b){return Math.round((b-a)/86400000);}
+  /* ---------- Demarrage ---------- */
 
-  /* Le fichier courant.json designe le dossier a afficher et l ordre dans
-     lequel essayer ses fichiers de sequence. Changer ce fichier suffit a
-     basculer la frise d une annee sur l autre. */
   function premierDisponible(liste){
     if(!liste.length) return Promise.reject(new Error("aucune sequence"));
     return fetch(liste[0] + '?t=' + Date.now())
@@ -235,65 +747,29 @@ body{margin:0;background:var(--fond);color:var(--encre);
       .catch(function(){ return premierDisponible(liste.slice(1)); });
   }
 
-  function pied(verif, derniere){
-    document.getElementById("pied").innerHTML =
-      'Données vérifiées le <b>' + (verif || "non renseignée") + '</b>' +
-      (derniere ? '<span class="sep">\u00b7</span>dernier évènement constaté le <b>' + fr(derniere) + '</b>' : '') +
-      '<br>Sources : Assemblée nationale et Sénat, licence ouverte Etalab';
+  function demarrer(){
+    var p=lireAdresse();
+    if(!p.length) return allerAccueil();
+    if(p[0]==="archives") return allerArchives();
+    if(!trouve(p[0])) return allerAccueil();
+    if(p.length===1) return allerMillesime(p[0]);
+    return allerSection(p[0], p[1]);
   }
 
   fetch('donnees/courant.json?t=' + Date.now())
     .then(function(r){ return r.json(); })
     .then(function(conf){
-      document.getElementById("titrePage").textContent = conf.titre || "Suivi du projet de loi de finances";
-      document.getElementById("fil").textContent = conf.sous_titre || "Phase parlementaire";
-      document.title = conf.titre || document.title;
-      return Promise.all([
-        fetch('donnees/catalogue-etapes.json?t=' + Date.now()).then(function(r){ return r.json(); }),
-        premierDisponible(conf.sequences || [])
-      ]);
-    })
-    .then(function(res){
-      var cat = res[0].etapes, d = res[1];
-
-      E = (d.sequence || []).map(function(ev){
-        var c = cat[ev.etape];
-        if(!c) return null;
-        return {
-          d: ev.date,
-          ch: c.chambre === 'senat' ? 'senat' : 'an',
-          co: c.cote,
-          nom: c.nom,
-          doc: ev.doc || '',
-          txt: c.texte + (ev.precision ? ' ' + ev.precision : ''),
-          lien: ev.lien || '',
-          ph: c.phrase
-        };
-      }).filter(Boolean);
-
-      /* Avant le depot, la sequence est vide : on le dit, et on masque
-         le curseur de rejeu qui n aurait rien a parcourir. */
-      if(!E.length){
-        elP.innerHTML = '<span class="l">' + (d.dossier || "Le projet de loi de finances") +
-                        '</span><span class="l">n\'a pas encore été déposé.</span>';
-        document.querySelector(".barre").style.display = "none";
-        document.querySelector(".couloirs").style.display = "none";
-        pied(d.derniere_verification, null);
-        return;
-      }
-
-      var p = (d.depot || E[0].d).split('-');
-      DEPOT = new Date(+p[0], +p[1]-1, +p[2]);
-
-      var derniere = dt(E[E.length-1].d);
-      MAX = Math.max(1, jour(DEPOT, derniere) + 3);
-      pied(d.derniere_verification, derniere);
-      elC.max = MAX;
-      elC.value = MAX;
-      rendu();
+      MILL = conf.millesimes || [];
+      return fetch('donnees/catalogue-etapes.json?t=' + Date.now())
+        .then(function(r){ return r.json(); })
+        .then(function(c){ CAT=c.etapes; demarrer(); });
     })
     .catch(function(){
-      elP.innerHTML = '<span class="l">Données indisponibles.</span>';
+      $("accueilCartes").innerHTML =
+        '<p class="sous-titre">Les données du site n\'ont pas pu être chargées. '+
+        'Si vous avez ouvert ce fichier depuis votre ordinateur, il faut le consulter '+
+        'depuis l\'adresse du site : une page ne peut pas lire ses fichiers voisins hors de son site.</p>';
+      piedSimple();
     });
 })();
 </script>
