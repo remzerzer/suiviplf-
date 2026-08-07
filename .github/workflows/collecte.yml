@@ -1,0 +1,99 @@
+name: Collecte du dossier
+
+# Deux facons de se declencher.
+#
+# Seule : six fois par jour, aux heures ci-dessous, exprimees en heure
+# universelle. En France, ajouter une heure l hiver et deux l ete.
+#
+# A la main : bouton "Run workflow", sans rien saisir. Les trois champs
+# ne servent qu aux verifications exceptionnelles.
+#
+# Dans les deux cas le programme lit donnees/courant.json et ne collecte
+# que le millesime marque "collecte": true. Avant le depot du texte, il
+# n a aucune reference de dossier, s arrete en quelques secondes et
+# n ecrit rien.
+
+on:
+  schedule:
+    - cron: "0 6,10,13,16,19,23 * * *"
+  workflow_dispatch:
+    inputs:
+      dossier:
+        description: "Laisser vide. Sinon : reference du dossier, exceptionnellement"
+        required: false
+        default: ""
+      sortie:
+        description: "Laisser vide. Sinon : fichier de sequence a produire"
+        required: false
+        default: ""
+      reference:
+        description: "Laisser vide. Sinon : sequence de comparaison"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  collecte:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Recuperer le contenu du depot
+        uses: actions/checkout@v4
+
+      - name: Installer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Lancer le collecteur
+        run: node outils/collecteur.mjs "${{ inputs.dossier }}" "${{ inputs.sortie }}" "${{ inputs.reference }}"
+
+      - name: Publier l horodatage ou ouvrir une proposition
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          git config user.name "Robot de suivi PLF"
+          git config user.email "actions@github.com"
+          git add -A donnees rapports
+
+          if git diff --cached --quiet; then
+            echo "Aucun changement. Rien a publier."
+            exit 0
+          fi
+
+          # Le programme reinscrit l heure de son passage a chaque execution.
+          # Si c est la seule chose qui a change, aucune donnee parlementaire
+          # n est nouvelle : on met l horodatage a jour sans deranger personne.
+          REEL=$(git diff --cached -U0 -- donnees rapports \
+                 | grep -E '^[+-]' \
+                 | grep -vE '^(\+\+\+|---)' \
+                 | grep -v 'derniere_verification' \
+                 | grep -v 'derniere-verification' || true)
+
+          HORODATAGE=$(date -u "+%d/%m/%Y a %H:%M UTC")
+
+          if [ -z "$REEL" ]; then
+            echo "Seul l horodatage a change. Publication directe, sans proposition."
+            git commit -m "Verification du $HORODATAGE"
+            git push origin HEAD:main
+            exit 0
+          fi
+
+          echo "Des donnees parlementaires ont change. Ouverture d une proposition."
+          BRANCHE="collecte-$(date -u +%Y%m%d-%H%M%S)"
+          git checkout -b "$BRANCHE"
+          git commit -m "Collecte du $HORODATAGE"
+          git push origin "$BRANCHE"
+          gh pr create \
+            --base main \
+            --head "$BRANCHE" \
+            --title "Collecte du $HORODATAGE" \
+            --body "Le programme a lu le dossier legislatif du millesime en cours et y a trouve du nouveau.
+
+          Deux fichiers sont proposes. La sequence automatique, qui ne remplace pas la sequence validee. Et un rapport de comparaison, qui indique ce que le programme a trouve en plus ou en moins par rapport a la saisie manuelle.
+
+          Ouvrez le rapport dans le dossier rapports avant de decider."
