@@ -349,6 +349,48 @@ jalons.forEach((j, i) => {
 
 const principal = infoDossiers[0] || {};
 const depot = jalons.find(j => j.etape === "depot-an");
+
+/* ============================================================
+   Les nouveautes
+
+   Avant d ecrire, on relit la sequence deja publiee sur le site et on
+   note ce qui n y figurait pas. Ce fichier permet a n8n de savoir quel
+   acte est nouveau, sans avoir a comparer deux versions ligne a ligne.
+   Un jalon est identifie par son etape et sa date.
+   ============================================================ */
+
+let publiee = null;
+try { publiee = JSON.parse(await fs.readFile(sortie, "utf8")); } catch { /* premiere collecte */ }
+
+const identite = j => `${j.etape}|${j.date}|${j.doc || ""}`;
+const dejaVus = new Set((publiee && publiee.sequence ? publiee.sequence : []).map(identite));
+
+const nouveautes = publiee ? jalons.filter(j => !dejaVus.has(identite(j))) : [];
+
+await fs.mkdir("donnees", { recursive: true });
+await fs.writeFile("donnees/nouveautes.json", JSON.stringify({
+  dossier: principal.titre || REFS[0],
+  constate_le: new Date().toISOString().slice(0, 16).replace("T", " ") + " UTC",
+  premiere_collecte: !publiee,
+  nombre: nouveautes.length,
+  nouveautes: nouveautes.map(j => ({
+    etape: j.etape,
+    date: j.date,
+    doc: j.doc || null,
+    lien: j.lien || null,
+    phase: (j.contexte && j.contexte.phase) || null,
+    statut_officiel: (j.contexte && j.contexte.statut_officiel) || null,
+    precision: j.precision || null
+  }))
+}, null, 2) + "\n");
+
+if (!publiee) {
+  console.log("Premiere collecte de ce millesime : tout est nouveau, rien n est signale comme nouveaute.");
+} else {
+  console.log(`Nouveautes depuis la derniere publication : ${nouveautes.length}.`);
+  nouveautes.forEach(j => console.log(`   ${j.date}  ${j.etape}`));
+}
+
 const donnees = {
   dossier: principal.titre || REFS[0],
   dossierRefs: REFS,
@@ -356,7 +398,6 @@ const donnees = {
   derniere_verification: new Date().toISOString().slice(0, 16).replace("T", " ") + " UTC",
   sequence: jalons
 };
-await fs.mkdir("donnees", { recursive: true });
 await fs.writeFile(sortie, JSON.stringify(donnees, null, 2) + "\n");
 
 /* ============================================================
