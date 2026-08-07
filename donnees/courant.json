@@ -13,6 +13,7 @@
       "sections": {
         "chronologie": {
           "sequences": [
+            "donnees/plf-2027-auto.json",
             "donnees/plf-2027.json"
           ]
         },
