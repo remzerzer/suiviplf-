@@ -1,20 +1,25 @@
 name: Collecteur du dossier
 
+# Lancement a la main. Sans rien saisir, le programme lit
+# donnees/courant.json et ne collecte que le millesime marque
+# "collecte": true. Les trois champs ci-dessous ne servent qu aux
+# verifications exceptionnelles : les laisser vides est le cas normal.
+
 on:
   workflow_dispatch:
     inputs:
       dossier:
-        description: "Reference du dossier legislatif"
-        required: true
-        default: "DLR5L17N52428"
-      sortie:
-        description: "Fichier de sequence a produire"
-        required: true
-        default: "donnees/plf-2026-auto.json"
-      reference:
-        description: "Sequence saisie a la main, pour comparaison"
+        description: "Laisser vide. Sinon : reference du dossier, exceptionnellement"
         required: false
-        default: "donnees/plf-2026.json"
+        default: ""
+      sortie:
+        description: "Laisser vide. Sinon : fichier de sequence a produire"
+        required: false
+        default: ""
+      reference:
+        description: "Laisser vide. Sinon : sequence de comparaison"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -23,6 +28,7 @@ permissions:
 jobs:
   collecteur:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Recuperer le contenu du depot
         uses: actions/checkout@v4
@@ -43,18 +49,19 @@ jobs:
           git config user.email "actions@github.com"
           git add -A donnees rapports
           if git diff --cached --quiet; then
-            echo "Aucun changement."
+            echo "Aucun changement, aucune proposition ouverte."
             exit 0
           fi
+          HORODATAGE=$(date -u "+%d/%m/%Y a %H:%M UTC")
           BRANCHE="collecteur-$(date -u +%Y%m%d-%H%M%S)"
           git checkout -b "$BRANCHE"
-          git commit -m "Collecte automatique du dossier ${{ inputs.dossier }}"
+          git commit -m "Collecte automatique du $HORODATAGE"
           git push origin "$BRANCHE"
           gh pr create \
             --base main \
             --head "$BRANCHE" \
-            --title "Collecte automatique du dossier ${{ inputs.dossier }}" \
-            --body "Le programme a lu le dossier legislatif et traduit ses actes en jalons.
+            --title "Collecte automatique du $HORODATAGE" \
+            --body "Le programme a lu le dossier legislatif du millesime en cours et traduit ses actes en jalons.
 
           Deux fichiers sont proposes. La sequence automatique, qui ne remplace pas la sequence validee. Et un rapport de comparaison, qui indique ce que le programme a trouve en plus ou en moins par rapport a la saisie manuelle.
 
