@@ -1,0 +1,46 @@
+{
+  "commentaire": "Décrit le site : la liste des millésimes, ce que chacun contient, et lequel est en cours. Une section absente ou nulle s'affiche comme à venir. Le champ collecte indique au collecteur les seuls dossiers à mettre à jour.",
+
+  "millesimes": [
+    {
+      "cle": "plf-2027",
+      "onglet": "PLF 2027",
+      "etat": "en cours",
+      "collecte": true,
+      "titre": "Projet de loi de finances pour 2027",
+      "sous_titre": "Procédure en cours",
+      "dossiers": [],
+      "sections": {
+        "chronologie": {
+          "sequences": [
+            "donnees/plf-2027.json"
+          ]
+        },
+        "articles": null,
+        "amendements": null
+      }
+    },
+    {
+      "cle": "plf-2026",
+      "onglet": "PLF 2026",
+      "etat": "archive",
+      "collecte": false,
+      "titre": "Projet de loi de finances pour 2026",
+      "sous_titre": "Procédure achevée · loi promulguée le 19 février 2026",
+      "dossiers": [
+        "DLR5L17N52428",
+        "DLR5L17N53386"
+      ],
+      "sections": {
+        "chronologie": {
+          "sequences": [
+            "donnees/plf-2026-auto.json",
+            "donnees/plf-2026.json"
+          ]
+        },
+        "articles": null,
+        "amendements": null
+      }
+    }
+  ]
+}
