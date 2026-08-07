@@ -367,21 +367,41 @@ const dejaVus = new Set((publiee && publiee.sequence ? publiee.sequence : []).ma
 
 const nouveautes = publiee ? jalons.filter(j => !dejaVus.has(identite(j))) : [];
 
+/* La fiche du catalogue accompagne chaque nouveaute : c est la seule
+   matiere autorisee pour expliquer ce qu est l etape. Sans elle, l IA
+   n aurait que ses propres connaissances, ce que la consigne interdit. */
+let catalogue = {};
+try {
+  catalogue = JSON.parse(await fs.readFile("donnees/catalogue-etapes.json", "utf8")).etapes || {};
+} catch {
+  console.log("Attention : catalogue-etapes.json illisible, les fiches ne seront pas jointes.");
+}
+
+const sansFiche = [];
+
 await fs.mkdir("donnees", { recursive: true });
 await fs.writeFile("donnees/nouveautes.json", JSON.stringify({
   dossier: principal.titre || REFS[0],
   constate_le: new Date().toISOString().slice(0, 16).replace("T", " ") + " UTC",
   premiere_collecte: !publiee,
   nombre: nouveautes.length,
-  nouveautes: nouveautes.map(j => ({
-    etape: j.etape,
-    date: j.date,
-    doc: j.doc || null,
-    lien: j.lien || null,
-    phase: (j.contexte && j.contexte.phase) || null,
-    statut_officiel: (j.contexte && j.contexte.statut_officiel) || null,
-    precision: j.precision || null
-  }))
+  nouveautes: nouveautes.map(j => {
+    const f = catalogue[j.etape];
+    if (!f) sansFiche.push(j.etape);
+    return {
+      etape: j.etape,
+      date: j.date,
+      doc: j.doc || null,
+      lien: j.lien || null,
+      phase: (j.contexte && j.contexte.phase) || null,
+      statut_officiel: (j.contexte && j.contexte.statut_officiel) || null,
+      precision: j.precision || null,
+      fiche_nom: f ? f.nom : null,
+      fiche_chambre: f ? f.chambre : null,
+      fiche_fondement: f ? (f.fondement || null) : null,
+      fiche_texte: f ? f.texte : null
+    };
+  })
 }, null, 2) + "\n");
 
 if (!publiee) {
@@ -389,6 +409,9 @@ if (!publiee) {
 } else {
   console.log(`Nouveautes depuis la derniere publication : ${nouveautes.length}.`);
   nouveautes.forEach(j => console.log(`   ${j.date}  ${j.etape}`));
+  if (sansFiche.length) {
+    console.log(`Attention : aucune fiche au catalogue pour ${[...new Set(sansFiche)].join(", ")}.`);
+  }
 }
 
 const donnees = {
