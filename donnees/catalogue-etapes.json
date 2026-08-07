@@ -1,6 +1,6 @@
 {
-  "version": "1.3",
-  "etabli_le": "2026-08-05",
+  "version": "1.4",
+  "etabli_le": "2026-08-07",
   "etapes": {
     "conseil-ministres": {
       "nom": "Présentation en Conseil des ministres",
@@ -251,7 +251,7 @@
       "cote": "droite",
       "nature": "ordinaire",
       "fondement": "LOLF, art. 40",
-      "texte": "Le Sénat a adopté sa propre version du texte, par scrutin public à la tribune. Un désaccord avec l'Assemblée ouvre la voie à une commission mixte paritaire.",
+      "texte": "Le Sénat a adopté le texte. S'il l'a modifié, un désaccord avec l'Assemblée peut ouvrir la voie à une commission mixte paritaire ; s'il l'a adopté dans les mêmes termes, la procédure s'achève. Les données de l'Assemblée ne permettent pas toujours de distinguer les deux cas : se reporter au dossier du Sénat.",
       "phrase": "est adopté par le Sénat",
       "detection": "automatique"
     },
@@ -284,7 +284,7 @@
       "cote": "droite",
       "nature": "rupture",
       "fondement": "Constitution, art. 47",
-      "texte": "Le Sénat a rejeté le texte après l'avoir discuté. Un rejet ne met pas fin à la procédure : la suite dépend de la phase où l'on se trouve.",
+      "texte": "Le Sénat a rejeté le texte. Le rejet peut résulter d'un vote sur l'ensemble ou de l'adoption d'une motion, notamment une question préalable, qui interrompt la discussion. Un rejet ne met pas fin à la procédure : la suite dépend de la phase où l'on se trouve.",
       "phrase": "est rejeté par le Sénat",
       "detection": "manuelle"
     },
@@ -564,7 +564,7 @@
       "detection": "manuelle"
     },
     "promulgation": {
-      "nom": "Promulgation de la loi de finances",
+      "nom": "Promulgation de la loi",
       "court": "Promulgation",
       "chambre": "commun",
       "cote": "centre",
