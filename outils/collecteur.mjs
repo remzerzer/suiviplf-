@@ -1,4 +1,4 @@
-/* Collecteur du dossier legislatif, version corrigee.
+/* Collecteur du dossier legislatif, version lisant la configuration.
    Traite un ou plusieurs dossiers, traduit leurs actes en jalons, fusionne le
    tout dans une seule sequence, et compare a la sequence saisie a la main.
    Peut aussi chercher la reference d un dossier par son intitule. */
@@ -7,10 +7,61 @@ import { execSync } from "node:child_process";
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
 
-const refsBrut = process.argv[2] || "DLR5L17N52428";
-const sortie = process.argv[3] || "donnees/plf-2026-auto.json";
-const reference = process.argv[4] || "donnees/plf-2026.json";
-const recherche = (process.argv[5] || "").trim();
+/* ============================================================
+   Ce qu il faut collecter
+
+   Sans argument, le programme lit donnees/courant.json et n en retient
+   que le millesime portant "collecte": true. Il ne peut donc pas
+   toucher a un millesime archive.
+
+   Avec des arguments, ceux-ci l emportent. Ils ne servent qu aux
+   verifications faites a la main.
+   ============================================================ */
+
+const arg = n => (process.argv[n] || "").trim();
+
+let refsBrut = arg(2), sortie = arg(3), reference = arg(4);
+const recherche = arg(5);
+
+if (!refsBrut) {
+  let conf;
+  try {
+    conf = JSON.parse(await fs.readFile("donnees/courant.json", "utf8"));
+  } catch {
+    console.error("Le fichier donnees/courant.json est introuvable ou illisible.");
+    process.exit(1);
+  }
+
+  const aCollecter = (conf.millesimes || []).filter(m => m.collecte === true);
+
+  if (!aCollecter.length) {
+    console.log("Aucun millesime n est marque a collecter dans donnees/courant.json.");
+    console.log("Rien n a ete ecrit.");
+    process.exit(0);
+  }
+  if (aCollecter.length > 1) {
+    console.log(`Attention : ${aCollecter.length} millesimes sont marques a collecter.`);
+    console.log(`Seul le premier, ${aCollecter[0].cle}, est traite.`);
+  }
+
+  const m = aCollecter[0];
+  const dossiers = (m.dossiers || []).map(s => String(s).trim()).filter(Boolean);
+
+  if (!dossiers.length) {
+    console.log(`Le millesime ${m.cle} n a pas encore de reference de dossier legislatif.`);
+    console.log("Elle n existera qu au depot du texte. Rien n a ete ecrit.");
+    process.exit(0);
+  }
+
+  const seqs = (m.sections && m.sections.chronologie && m.sections.chronologie.sequences) || [];
+  refsBrut = dossiers.join(",");
+  sortie = seqs.find(f => f.endsWith("-auto.json")) || `donnees/${m.cle}-auto.json`;
+  reference = seqs.find(f => !f.endsWith("-auto.json")) || "";
+
+  console.log(`Millesime a collecter : ${m.cle}`);
+  console.log(`Dossiers : ${dossiers.join(", ")}`);
+  console.log(`Sequence produite : ${sortie}`);
+}
 
 const REFS = refsBrut.split(",").map(s => s.trim()).filter(Boolean);
 const ARCHIVE = "https://data.assemblee-nationale.fr/static/openData/repository/17/loi/dossiers_legislatifs/Dossiers_Legislatifs.json.zip";
