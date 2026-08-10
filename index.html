@@ -382,11 +382,14 @@ body[data-vue="annexe"] .fil{color:var(--ocre)}
     $("pied").innerHTML = "Sources : Assemblée nationale et Sénat, licence ouverte Etalab"+
       '<span class="sep">·</span>Les contenus produits automatiquement ne constituent pas un conseil juridique';
   }
-  function piedDonnees(verif, derniere){
+  /* Une seule date, celle de la derniere mise a jour effective du contenu.
+     Elle ne bouge que lorsqu un texte valide est publie. Le passage du
+     collecteur, lui, ne la modifie pas : il n a rien change pour le lecteur. */
+  function piedDonnees(maj){
     $("pied").innerHTML =
-      'Données vérifiées le <b>' + (verif || "non renseignée") + '</b>' +
-      (derniere ? '<span class="sep">·</span>dernier évènement constaté le <b>' + fr(derniere) + '</b>' : '') +
-      '<br>Sources : Assemblée nationale et Sénat, licence ouverte Etalab';
+      (maj ? 'Mis à jour le <b>' + maj + '</b>' : 'Aucune mise à jour publiée à ce jour') +
+      '<br>Sources : Assemblée nationale et Sénat, licence ouverte Etalab' +
+      '<span class="sep">·</span>Les contenus produits automatiquement ne constituent pas un conseil juridique';
   }
 
   function allerAccueil(){
@@ -499,8 +502,20 @@ body[data-vue="annexe"] .fil{color:var(--ocre)}
     var suite = CACHE[m.cle] ? Promise.resolve(CACHE[m.cle])
       : premierDisponible(conf.sequences||[]).then(function(d){ CACHE[m.cle]=d; return d; });
 
-    return suite.then(function(d){
-      batir(m,d);
+    /* Les textes valides sont facultatifs. Tant qu aucun n a ete valide,
+       le fichier peut ne pas exister : la frise affiche alors le texte
+       generique du catalogue, sans erreur. */
+    var lesTextes = CACHE["textes:"+m.cle] !== undefined
+      ? Promise.resolve(CACHE["textes:"+m.cle])
+      : (conf.textes
+          ? fetch(conf.textes + '?t=' + Date.now())
+              .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+              .catch(function(){ return null; })
+              .then(function(t){ CACHE["textes:"+m.cle]=t; return t; })
+          : Promise.resolve(null));
+
+    return Promise.all([suite, lesTextes]).then(function(res){
+      batir(m, res[0], res[1]);
       VUE="principal";
       ouvrirVue("principal", null);
     }).catch(function(){
@@ -611,21 +626,28 @@ body[data-vue="annexe"] .fil{color:var(--ocre)}
     return (k>30 ? s.slice(0,k) : s) + '…';
   }
 
-  /* Construit les vues d un millesime a partir de son fichier de sequence. */
-  function batir(m, d){
+  /* Construit les vues d un millesime a partir de son fichier de sequence.
+     Le fichier des textes valides, s il existe, fournit pour certains
+     jalons un paragraphe relu et valide par l auteur. Il remplace alors
+     le texte generique du catalogue. */
+  function batir(m, d, textes){
     VUES={}; CURSEURS={}; OUVERTS={};
     var principal = d.dossier || '';
+    var VALIDES = (textes && textes.textes) || {};
 
     var brut = (d.sequence || []).map(function(ev){
       var c = CAT[ev.etape];
       if(!c) return null;
       var ctx = ev.contexte || {};
+      var valide = VALIDES[ev.etape + '|' + ev.date];
       return {
         type:'j', d: ev.date, code: ctx.code_acte || '',
         dossier: ctx.dossier || principal,
         ch: c.chambre === 'senat' ? 'senat' : 'an',
         co: c.cote, nom: c.nom, doc: ev.doc || '',
-        txt: c.texte + (ev.precision ? ' ' + ev.precision : ''),
+        txt: (valide && valide.texte)
+               ? valide.texte
+               : c.texte + (ev.precision ? ' ' + ev.precision : ''),
         lien: ev.lien || '', ph: c.phrase
       };
     }).filter(Boolean);
@@ -638,7 +660,7 @@ body[data-vue="annexe"] .fil{color:var(--ocre)}
     /* Avant le depot, la sequence est vide : on le dit, et le curseur de
        rejeu disparait, n ayant rien a parcourir. */
     if(!brut.length){
-      piedDonnees(d.derniere_verification, null);
+      piedDonnees(textes && textes.mis_a_jour_le);
       VUES.principal = {titre:m.titre, sousTitre:m.sous_titre,
         titreCourt: d.dossier || m.titre, jalons:[], vide:true, annexe:false};
       return;
@@ -683,7 +705,7 @@ body[data-vue="annexe"] .fil{color:var(--ocre)}
         jalons:g, depot:dep, max: Math.max(1, jour(dep, der) + 2), annexe:true};
     });
 
-    piedDonnees(d.derniere_verification, derniere);
+    piedDonnees(textes && textes.mis_a_jour_le);
   }
 
   /* ---------- Interactions ---------- */
