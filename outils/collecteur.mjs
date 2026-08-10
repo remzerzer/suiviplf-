@@ -418,7 +418,6 @@ const donnees = {
   dossier: principal.titre || REFS[0],
   dossierRefs: REFS,
   depot: depot ? depot.date : (jalons[0] && jalons[0].date) || null,
-  derniere_verification: new Date().toISOString().slice(0, 16).replace("T", " ") + " UTC",
   sequence: jalons
 };
 await fs.writeFile(sortie, JSON.stringify(donnees, null, 2) + "\n");
