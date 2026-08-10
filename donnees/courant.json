@@ -1,11 +1,11 @@
 {
-  "commentaire": "Décrit le site : la liste des millésimes, ce que chacun contient, et lequel est en cours. Une section absente ou nulle s'affiche comme à venir. Le champ collecte indique au collecteur les seuls dossiers à mettre à jour. Le champ textes désigne le fichier des paragraphes validés, qui remplacent le texte générique du catalogue.",
+  "commentaire": "REPETITION GENERALE EN COURS : le PLF 2026 est temporairement marque a collecter. Remettre collecte a true sur plf-2027 et false sur plf-2026 une fois l essai termine.",
   "millesimes": [
     {
       "cle": "plf-2027",
       "onglet": "PLF 2027",
       "etat": "en cours",
-      "collecte": true,
+      "collecte": false,
       "titre": "Projet de loi de finances pour 2027",
       "sous_titre": "Procédure en cours",
       "dossiers": [],
@@ -25,7 +25,7 @@
       "cle": "plf-2026",
       "onglet": "PLF 2026",
       "etat": "archive",
-      "collecte": false,
+      "collecte": true,
       "titre": "Projet de loi de finances pour 2026",
       "sous_titre": "Procédure achevée · loi promulguée le 19 février 2026",
       "dossiers": [
