@@ -1,0 +1,21 @@
+{
+  "dossier": "Projet de loi de finances pour 2026",
+  "constate_le": "2026-08-10 19:42 UTC",
+  "premiere_collecte": false,
+  "nombre": 1,
+  "nouveautes": [
+    {
+      "etape": "promulgation",
+      "date": "2026-02-19",
+      "doc": "Loi n° 2026-103 de finances pour 2026",
+      "lien": "https://www.legifrance.gouv.fr/WAspad/UnTexteDeJorf?numjo=CPPX2524517L",
+      "phase": "promulgation",
+      "statut_officiel": null,
+      "precision": "Dossier : Projet de loi de finances pour 2026. Publiee au Journal officiel n° 43 du 2026-02-20.",
+      "fiche_nom": "Promulgation de la loi",
+      "fiche_chambre": "commun",
+      "fiche_fondement": "Constitution, art. 10",
+      "fiche_texte": "Le Président de la République a promulgué la loi. L'article 10 de la Constitution lui impartit quinze jours à compter de la transmission du texte définitivement adopté."
+    }
+  ]
+}
