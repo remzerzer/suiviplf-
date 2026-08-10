@@ -1,0 +1,6 @@
+{
+  "commentaire": "Paragraphes validés, jalon par jalon. La clé combine l'étape et sa date. Chaque texte remplace, sur la fiche du site, le texte générique du catalogue. Ce fichier est écrit par n8n après votre validation sur Telegram ; il n'est pas à modifier à la main sans nécessité. Le champ mis_a_jour_le porte la date affichée en pied de page : elle ne change que lorsqu'un texte validé est publié.",
+  "millesime": "plf-2027",
+  "mis_a_jour_le": null,
+  "textes": {}
+}
