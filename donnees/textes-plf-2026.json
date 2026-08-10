@@ -1,6 +1,12 @@
 {
   "commentaire": "Paragraphes validés, jalon par jalon. La clé combine l'étape et sa date. Chaque texte remplace, sur la fiche du site, le texte générique du catalogue. Ce fichier est écrit par n8n après votre validation sur Telegram ; il n'est pas à modifier à la main sans nécessité. Le champ mis_a_jour_le porte la date affichée en pied de page : elle ne change que lorsqu'un texte validé est publié.",
   "millesime": "plf-2026",
-  "mis_a_jour_le": null,
-  "textes": {}
+  "mis_a_jour_le": "2026-08-10 19:48 UTC",
+  "textes": {
+    "promulgation|2026-02-19": {
+      "texte": "Le 19 février 2026, le Président de la République a promulgué la loi n° 2026-103 de finances pour 2026. La promulgation, acte par lequel le Président de la République promulgue la loi, a été suivie de sa publication au Journal officiel n° 43 le 20 février 2026.",
+      "valide_le": "2026-08-10 19:48 UTC",
+      "proposition": 15
+    }
+  }
 }
