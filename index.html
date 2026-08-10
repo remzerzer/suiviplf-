@@ -6,211 +6,275 @@
 <title>Suivi du projet de loi de finances</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300..600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --fond:#EDF0F5;--surface:#FFFFFF;--encre:#0F151E;--graphite:#3F4550;--gris:#68717E;
-  --trait:#C9D1DC;--bleu:#22368C;--bleu-pale:#E6EAF6;--rouge:#A3282B;--rouge-pale:#F7E9E9;
-  --ocre:#7A5A16;--ocre-pale:#F4EEDE;--ocre-trait:#D9C9A0;
+  --fond:#FFFFFF;--bande:#F4F5F7;--surface:#FFFFFF;
+  --encre:#1A1A1A;--graphite:#3C3C3C;--gris:#6B6B6B;
+  --trait:#DCDCDC;--trait-fort:#B8B8B8;
+  --bleu:#2B4A9C;--bleu-pale:#EDF1FA;--bleu-sombre:#1E3570;
+  --rouge:#8E1A1A;--rouge-pale:#FAEDED;--rouge-sombre:#6B1212;
+  --ocre:#7A5A16;--ocre-pale:#F7F1E3;--ocre-trait:#DCCCA4;
+  --vert:#1E7A43;
 }
-/* Un dossier distinct a son propre decor : fond plus chaud, traits plus
-   sourds. Les couleurs des deux chambres, elles, ne changent pas. */
-body[data-vue="annexe"]{
-  --fond:#F3EFE4;--surface:#FFFDF8;--trait:#DCD2BC;--gris:#7A7263;--graphite:#4A4438;
-}
+body[data-vue="annexe"]{ --fond:#FDFCF8;--bande:#F5F1E7;--trait:#DFD6C0; }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--fond);color:var(--encre);
-  font-family:"Newsreader",Georgia,"Times New Roman",serif;font-size:16.5px;line-height:1.6;
-  transition:background-color .4s ease}
-.page{max-width:1000px;margin:0 auto;padding:0 20px 96px}
+  font-family:"Source Sans 3","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;line-height:1.6;transition:background-color .35s ease}
+.page{max-width:1060px;margin:0 auto;padding:0 24px 96px}
 [hidden]{display:none!important}
+a{color:var(--bleu)}
 
-/* Fil d Ariane : ou l on se trouve, et par ou revenir. */
-.ariane{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:22px 0 4px;
-  font-family:"DM Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.08em}
-.ariane button{font-family:inherit;font-size:inherit;letter-spacing:inherit;background:none;
-  border:none;padding:0;color:var(--gris);cursor:pointer;text-underline-offset:3px}
-.ariane button:hover{color:var(--encre);text-decoration:underline}
-.ariane button:focus-visible{outline:2px solid var(--encre);outline-offset:2px}
-.ariane .sep{color:var(--trait)}
-.ariane .ici{color:var(--encre)}
+.ariane{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:20px 0 0;
+  font-size:13.5px}
+.ariane button{font:inherit;background:none;border:none;padding:0;color:var(--gris);
+  cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.ariane button:hover{color:var(--bleu)}
+.ariane button:focus-visible{outline:2px solid var(--bleu);outline-offset:2px}
+.ariane .sep{color:var(--trait-fort)}
+.ariane .ici{color:var(--encre);font-weight:600}
 
-.ecran{animation:entre .3s cubic-bezier(.2,.7,.3,1) both}
-@keyframes entre{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.ecran{animation:entre .28s ease both}
+@keyframes entre{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-.tete-ecran{padding:46px 0 30px;border-bottom:1px solid var(--trait)}
+.tete-ecran{padding:36px 0 26px;border-bottom:3px solid var(--bleu)}
 .tete-ecran.centre{text-align:center}
-.sur-titre{font-family:"DM Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--gris);margin:0 0 12px}
-.titre-page{font-family:"Newsreader",Georgia,serif;font-weight:600;
-  font-size:clamp(30px,4.6vw,46px);line-height:1.06;letter-spacing:-.015em;margin:0}
-.sous-titre{color:var(--graphite);margin:12px 0 0;font-size:17.5px;max-width:60ch}
+.sur-titre{font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--bleu);font-weight:600;margin:0 0 10px}
+.titre-page{font-family:inherit;font-weight:700;
+  font-size:clamp(27px,3.6vw,38px);line-height:1.15;letter-spacing:-.01em;margin:0}
+.sous-titre{color:var(--graphite);margin:12px 0 0;font-size:17px;max-width:64ch}
 .tete-ecran.centre .sous-titre{margin-left:auto;margin-right:auto}
 
-/* Cartes de navigation : millesimes, sections. */
-.cartes{display:grid;gap:14px;margin-top:30px}
-.cartes.deux{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-.cartes.trois{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.cartes{display:grid;gap:16px;margin-top:28px}
+.cartes.deux{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.cartes.trois{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .bloc{display:block;width:100%;text-align:left;background:var(--surface);
-  border:1px solid var(--trait);padding:20px 22px;font-family:inherit;color:inherit;
-  cursor:pointer;transition:border-color .15s,transform .15s}
-.bloc:hover{border-color:var(--graphite)}
-.bloc:focus-visible{outline:2px solid var(--encre);outline-offset:2px}
-.bloc .etat{font-family:"DM Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--gris);display:block;margin-bottom:7px}
-.bloc .titre{font-family:"Newsreader",Georgia,serif;font-weight:600;font-size:21px;
-  line-height:1.2;display:block}
+  border:1px solid var(--trait);border-top:4px solid var(--trait-fort);
+  padding:20px 22px;font:inherit;color:inherit;cursor:pointer;
+  transition:border-color .15s,background-color .15s}
+.bloc:hover{background:var(--bande);border-top-color:var(--bleu)}
+.bloc:focus-visible{outline:2px solid var(--bleu);outline-offset:2px}
+.bloc .etat{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--gris);font-weight:600;display:block;margin-bottom:8px}
+.bloc .titre{font-weight:700;font-size:20px;line-height:1.25;display:block}
 .bloc .detail{color:var(--graphite);font-size:15px;display:block;margin-top:8px;line-height:1.5}
-.bloc .aller{font-family:"DM Mono",ui-monospace,monospace;font-size:11px;color:var(--bleu);
-  display:block;margin-top:14px}
-.bloc.encours{border-color:var(--bleu);background:var(--bleu-pale)}
+.bloc .aller{font-size:13.5px;color:var(--bleu);font-weight:600;display:block;margin-top:14px}
+.bloc.encours{border-top-color:var(--bleu);background:var(--bleu-pale)}
 .bloc.encours .etat{color:var(--bleu)}
-.bloc.archive .etat{color:var(--ocre)}
-.bloc.archive .aller{color:var(--ocre)}
-.bloc[aria-disabled="true"]{cursor:default;background:transparent;border-style:dashed;opacity:.68}
-.bloc[aria-disabled="true"]:hover{border-color:var(--trait)}
+.bloc.archive{border-top-color:var(--rouge)}
+.bloc.archive .etat,.bloc.archive .aller{color:var(--rouge)}
+.bloc[aria-disabled="true"]{cursor:default;background:var(--bande);
+  border-top-color:var(--trait);opacity:.7}
+.bloc[aria-disabled="true"]:hover{background:var(--bande);border-top-color:var(--trait)}
 .bloc[aria-disabled="true"] .aller{color:var(--gris)}
 
-.vide-section{background:var(--surface);border:1px solid var(--trait);
-  border-left:3px solid var(--gris);padding:22px 24px;margin-top:30px;max-width:62ch}
+.vide-section{background:var(--bande);border-left:4px solid var(--trait-fort);
+  padding:22px 26px;margin-top:28px;max-width:66ch}
 .vide-section p{margin:0 0 12px}
 .vide-section p:last-child{margin-bottom:0}
 
-.barre{background:var(--encre);color:#fff;margin:14px -20px 0;padding:14px 20px;
+.barre{background:var(--bleu-sombre);color:#fff;margin:20px -24px 0;padding:14px 24px;
   display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
-.barre .tag{font-family:"DM Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.14em;
-  text-transform:uppercase;border:1px solid rgba(255,255,255,.4);padding:3px 8px;flex:0 0 auto}
+.barre .tag{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
+  font-weight:600;border:1px solid rgba(255,255,255,.45);padding:3px 9px;flex:0 0 auto}
 .barre .curseur{flex:1 1 260px;display:flex;align-items:center;gap:12px;min-width:200px}
 .barre input[type=range]{flex:1;accent-color:#fff;min-width:120px}
 .barre .jour{font-family:"DM Mono",ui-monospace,monospace;font-size:13px;white-space:nowrap}
-.barre button{font-family:"Newsreader",Georgia,serif;font-size:13px;background:#1B2330;color:#fff;
-  border:1px solid #39414F;padding:7px 14px;cursor:pointer}
-.barre button:hover{background:#28313F}
+.barre button{font:inherit;font-size:13.5px;background:rgba(255,255,255,.12);color:#fff;
+  border:1px solid rgba(255,255,255,.45);padding:7px 15px;cursor:pointer}
+.barre button:hover{background:rgba(255,255,255,.22)}
 .barre button:focus-visible,.barre input:focus-visible{outline:2px solid #fff;outline-offset:2px}
 
-.retour{margin:0 -20px;padding:11px 20px;background:#EFE7D3;border-bottom:1px solid var(--ocre-trait);
-  display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.retour button{font-family:"Newsreader",Georgia,serif;font-size:13.5px;background:transparent;
-  border:1px solid #C7B27E;color:#5C430F;padding:6px 13px;cursor:pointer}
-.retour button:hover{background:#E5D9BB}
+.retour{margin:0 -24px;padding:12px 24px;background:var(--ocre-pale);
+  border-bottom:1px solid var(--ocre-trait);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.retour button{font:inherit;font-size:13.5px;background:#fff;border:1px solid var(--ocre-trait);
+  color:var(--ocre);padding:7px 14px;cursor:pointer;font-weight:600}
+.retour button:hover{background:#fff;border-color:var(--ocre)}
 .retour button:focus-visible{outline:2px solid var(--ocre);outline-offset:2px}
-.retour .mention{font-family:"DM Mono",ui-monospace,monospace;font-size:10.5px;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--ocre)}
+.retour .mention{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ocre);font-weight:600}
 
-.statut{padding:48px 0 32px;border-bottom:1px solid var(--trait);text-align:center}
-body[data-vue="annexe"] .statut .titre-page{font-size:clamp(23px,3.2vw,32px)}
-.fil{font-family:"DM Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--gris);margin:0 0 28px}
+.statut{padding:34px 0 28px;border-bottom:1px solid var(--trait);text-align:center}
+body[data-vue="annexe"] .statut .titre-page{font-size:clamp(22px,2.8vw,29px)}
+.fil{font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--bleu);
+  font-weight:600;margin:0 0 22px}
 body[data-vue="annexe"] .fil{color:var(--ocre)}
-.phrase{font-family:"Newsreader",Georgia,serif;
-  font-weight:400;font-size:clamp(24px,3.6vw,36px);line-height:1.16;letter-spacing:-.008em;
-  margin:0 auto;max-width:22ch;color:var(--graphite)}
+.phrase{font-weight:400;font-size:clamp(21px,2.8vw,29px);line-height:1.25;
+  margin:0 auto;max-width:26ch;color:var(--graphite)}
 .phrase .l{display:block}
-.phrase .l.an{color:var(--bleu)}
-.phrase .l.senat{color:var(--rouge)}
-.attente{max-width:46ch;margin:26px auto 0;font-size:15.5px;color:var(--gris);line-height:1.6}
+.phrase .l.an{color:var(--bleu);font-weight:700}
+.phrase .l.senat{color:var(--rouge);font-weight:700}
+.attente{max-width:48ch;margin:22px auto 0;font-size:15.5px;color:var(--gris);line-height:1.6}
 
-.vue.entre-d{animation:entreD .34s cubic-bezier(.2,.7,.3,1) both}
-.vue.entre-g{animation:entreG .34s cubic-bezier(.2,.7,.3,1) both}
-@keyframes entreD{from{opacity:0;transform:translateX(34px)}to{opacity:1;transform:none}}
-@keyframes entreG{from{opacity:0;transform:translateX(-34px)}to{opacity:1;transform:none}}
+.vue.entre-d{animation:entreD .3s ease both}
+.vue.entre-g{animation:entreG .3s ease both}
+@keyframes entreD{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes entreG{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
 
-.couloirs{display:flex;justify-content:space-between;align-items:center;margin:46px 0 8px}
-.couloir{font-family:"Newsreader",Georgia,serif;font-weight:600;
-  font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+.couloirs{display:flex;justify-content:space-between;align-items:center;margin:38px 0 14px}
+.couloir{font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
 .couloir.gauche{color:var(--bleu)}
 .couloir.droite{color:var(--rouge)}
-.couloir.milieu{color:var(--gris);font-size:10px;letter-spacing:.1em}
+.couloir.milieu{color:var(--gris);font-size:11px;letter-spacing:.06em;font-weight:600}
 
 .navette{list-style:none;margin:0;padding:0;position:relative}
-.navette::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;
-  background:var(--trait);transform:translateX(-.5px)}
-.jalon{position:relative;display:grid;grid-template-columns:1fr 60px 1fr;margin-bottom:12px}
-.carte{grid-column:1;padding-right:34px;text-align:right}
-.jalon[data-cote="droite"] .carte{grid-column:3;padding:0 0 0 34px;text-align:left}
-.jalon[data-cote="centre"] .carte{grid-column:1/-1;padding:0;text-align:center;max-width:470px;margin:0 auto}
-.jalon[data-etat="venir"]{opacity:.42}
+.navette::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;
+  background:var(--trait);transform:translateX(-1px)}
+.jalon{position:relative;display:grid;grid-template-columns:1fr 118px 1fr;margin-bottom:16px}
+.carte{grid-column:1;padding-right:26px;text-align:right}
+.jalon[data-cote="droite"] .carte{grid-column:3;padding:0 0 0 26px;text-align:left}
+.jalon[data-cote="centre"] .carte{grid-column:1/-1;padding:0;text-align:center;max-width:520px;margin:0 auto}
+.jalon[data-etat="venir"]{opacity:.4}
 
-.puce{grid-column:2;justify-self:center;align-self:start;margin-top:15px;width:12px;height:12px;
-  border-radius:50%;background:var(--fond);border:2px solid var(--trait);position:relative;z-index:2}
-.jalon[data-etat="fait"] .puce{background:var(--graphite);border-color:var(--graphite)}
-.jalon[data-chambre="an"][data-etat="fait"] .puce{background:var(--bleu);border-color:var(--bleu)}
-.jalon[data-chambre="senat"][data-etat="fait"] .puce{background:var(--rouge);border-color:var(--rouge)}
-.jalon[data-etat="cours"] .puce{background:#fff;border-width:4px;border-color:var(--graphite);
-  width:18px;height:18px;margin-top:12px}
-.jalon[data-chambre="an"][data-etat="cours"] .puce{border-color:var(--bleu)}
-.jalon[data-chambre="senat"][data-etat="cours"] .puce{border-color:var(--rouge)}
-.jalon[data-etat="cours"] .puce::after{content:"";position:absolute;inset:-9px;border-radius:50%;
-  border:1px solid currentColor;opacity:.5;animation:halo 2.4s ease-out infinite}
-.jalon[data-chambre="an"][data-etat="cours"] .puce::after{color:var(--bleu)}
-.jalon[data-chambre="senat"][data-etat="cours"] .puce::after{color:var(--rouge)}
-@keyframes halo{0%{transform:scale(.7);opacity:.6}100%{transform:scale(1.5);opacity:0}}
+.puce{grid-column:2;justify-self:center;align-self:start;margin-top:10px;
+  width:26px;height:26px;border-radius:50%;background:#fff;
+  border:2px solid var(--trait-fort);position:relative;z-index:2}
+.jalon[data-etat="fait"] .puce{border-color:var(--graphite)}
+.jalon[data-etat="fait"] .puce::before{content:"";position:absolute;inset:5px;
+  border-radius:50%;background:var(--graphite)}
+.jalon[data-chambre="an"][data-etat="fait"] .puce{border-color:var(--bleu)}
+.jalon[data-chambre="an"][data-etat="fait"] .puce::before{background:var(--bleu)}
+.jalon[data-chambre="senat"][data-etat="fait"] .puce{border-color:var(--rouge)}
+.jalon[data-chambre="senat"][data-etat="fait"] .puce::before{background:var(--rouge)}
+.jalon[data-etat="cours"] .puce{border-width:3px;border-color:var(--vert);
+  width:30px;height:30px;margin-top:8px}
+.jalon[data-etat="cours"] .puce::before{content:"";position:absolute;inset:5px;
+  border-radius:50%;background:var(--vert)}
+.jalon[data-etat="cours"] .puce::after{content:"";position:absolute;inset:-8px;
+  border-radius:50%;border:2px solid var(--vert);opacity:.45;
+  animation:halo 2.4s ease-out infinite}
+@keyframes halo{0%{transform:scale(.75);opacity:.55}100%{transform:scale(1.45);opacity:0}}
 
-.tete{background:var(--surface);border:1px solid var(--trait);width:100%;text-align:inherit;
-  padding:13px 15px;cursor:pointer;font-family:inherit;color:inherit;transition:border-color .15s}
-.tete:hover{border-color:var(--graphite)}
-.tete:focus-visible{outline:2px solid var(--encre);outline-offset:2px}
-.jalon[data-etat="cours"] .tete{box-shadow:0 2px 0 0 var(--graphite);border-color:var(--graphite)}
-.jalon[data-chambre="an"][data-etat="cours"] .tete{box-shadow:0 2px 0 0 var(--bleu);border-color:var(--bleu)}
-.jalon[data-chambre="senat"][data-etat="cours"] .tete{box-shadow:0 2px 0 0 var(--rouge);border-color:var(--rouge)}
-.jalon[data-etat="venir"] .tete{background:transparent;border-style:dashed}
+.tete{background:var(--surface);border:1px solid var(--trait);width:100%;
+  text-align:inherit;padding:0;cursor:pointer;font:inherit;color:inherit;
+  transition:border-color .15s;overflow:hidden}
+.tete:hover{border-color:var(--trait-fort)}
+.tete:focus-visible{outline:2px solid var(--bleu);outline-offset:2px}
+.quand{display:block;padding:9px 16px;font-family:"DM Mono",ui-monospace,monospace;
+  font-size:12px;letter-spacing:.03em;color:#fff;background:var(--gris)}
+.jalon[data-chambre="an"] .quand{background:var(--bleu)}
+.jalon[data-chambre="senat"] .quand{background:var(--rouge)}
+.jalon[data-etat="venir"] .quand{background:var(--trait-fort)}
+.nom{font-weight:700;font-size:19px;line-height:1.3;margin:0;padding:14px 16px 0}
+.doc{font-family:"DM Mono",ui-monospace,monospace;font-size:12px;color:var(--gris);
+  margin:0;padding:6px 16px 14px}
 
-.quand{font-family:"DM Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.06em;
-  color:var(--gris);display:block;margin-bottom:5px}
-.jalon[data-chambre="an"] .quand{color:var(--bleu)}
-.jalon[data-chambre="senat"] .quand{color:var(--rouge)}
-.nom{font-family:"Newsreader",Georgia,serif;font-weight:600;
-  font-size:18.5px;line-height:1.28;margin:0}
-.doc{font-family:"DM Mono",ui-monospace,monospace;font-size:12px;color:var(--graphite);margin:6px 0 0}
-
-.fiche{margin-top:9px;background:var(--surface);border:1px solid var(--trait);
-  border-left:3px solid var(--graphite);padding:15px 17px;text-align:left;font-size:14.5px}
+.fiche{margin-top:0;background:var(--bande);border:1px solid var(--trait);border-top:none;
+  border-left:4px solid var(--gris);padding:16px 18px;text-align:left;font-size:15px}
 .jalon[data-chambre="an"] .fiche{border-left-color:var(--bleu)}
 .jalon[data-chambre="senat"] .fiche{border-left-color:var(--rouge)}
-.fiche p{margin:0 0 11px}
+.fiche p{margin:0 0 12px}
 .fiche p:last-child{margin-bottom:0}
-.cle{font-family:"DM Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--gris);display:block;margin-bottom:2px}
-.fiche a{color:var(--bleu);text-underline-offset:2px;word-break:break-word}
+.cle{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--gris);
+  font-weight:600;display:block;margin-bottom:3px}
+.fiche a{text-underline-offset:2px;word-break:break-word}
 .absent{color:var(--gris);font-style:italic}
 
-.pied{margin-top:48px;padding-top:16px;border-top:1px solid var(--trait);
-  font-family:"DM Mono",ui-monospace,monospace;font-size:11.5px;line-height:1.9;color:var(--gris)}
-.pied .sep{opacity:.45;padding:0 6px}
+.pied{margin-top:52px;padding-top:20px;border-top:3px solid var(--bleu);
+  font-size:13px;line-height:1.9;color:var(--gris)}
+.pied .sep{opacity:.5;padding:0 7px}
 
-/* Deviation : le dossier distinct quitte la route principale.
-   Cliquer ouvre sa propre frise, il ne se deplie pas sur place. */
-.jalon.devi::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:5px;
-  margin-left:-2.5px;background:var(--fond);z-index:1}
+.jalon.devi::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:6px;
+  margin-left:-3px;background:var(--fond);z-index:1}
 .jalon.devi::after{content:"";position:absolute;left:50%;top:0;bottom:0;
-  border-left:1px dashed var(--trait);margin-left:-.5px;z-index:1}
-.jalon.devi .carte{grid-column:1;padding-right:34px;text-align:right}
-.jalon.devi .tete{background:var(--ocre-pale);border-color:var(--ocre-trait)}
+  border-left:2px dashed var(--trait-fort);margin-left:-1px;z-index:1}
+.jalon.devi .carte{grid-column:1;padding-right:26px;text-align:right}
+.jalon.devi .tete{border-color:var(--ocre-trait);background:var(--ocre-pale)}
 .jalon.devi .tete:hover{border-color:var(--ocre)}
-.jalon.devi .quand{color:var(--ocre)}
-.jalon.devi .aller{font-family:"DM Mono",ui-monospace,monospace;font-size:11.5px;
-  color:var(--ocre);margin:8px 0 0}
-.jalon.devi[data-etat="cours"] .tete{box-shadow:0 2px 0 0 var(--ocre);border-color:var(--ocre)}
-.jalon.devi[data-etat="venir"] .tete{background:transparent;border-style:dashed}
-.embranchement{grid-column:2;justify-self:center;align-self:start;margin-top:8px;
-  width:60px;height:40px;overflow:visible;position:relative;z-index:2}
+.jalon.devi .quand{background:var(--ocre)}
+.jalon.devi .aller{font-size:13px;color:var(--ocre);font-weight:600;margin:0;padding:0 16px 14px}
+.embranchement{grid-column:2;justify-self:center;align-self:start;margin-top:6px;
+  width:72px;height:44px;overflow:visible;position:relative;z-index:2}
 
-@media (max-width:720px){
+@media (max-width:760px){
   .couloirs{display:none}
-  .navette::before{left:6px}
-  .jalon{grid-template-columns:26px 1fr}
+  .navette::before{left:9px}
+  .jalon{grid-template-columns:32px 1fr}
   .carte,.jalon[data-cote="droite"] .carte,.jalon[data-cote="centre"] .carte,
-  .jalon.devi .carte{
-    grid-column:2;padding:0;text-align:left;max-width:none;margin:0}
+  .jalon.devi .carte{grid-column:2;padding:0;text-align:left;max-width:none;margin:0}
   .puce{grid-column:1;grid-row:1;justify-self:start}
-  .jalon[data-etat="cours"] .puce{margin-left:-3px}
   .phrase{max-width:none}
-  .jalon.devi::before,.jalon.devi::after{left:6px}
-  .jalon.devi .tete{border-left:3px solid var(--ocre)}
+  .jalon.devi::before,.jalon.devi::after{left:9px}
   .embranchement{display:none}
+  .barre,.retour{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
+  .page{padding:0 16px 64px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Emblemes. Les logos sont repris entiers, mots compris : c est pourquoi
+   les medaillons sont larges. Un logo reduit sous quarante pixels n est
+   plus lisible. */
+.puce{width:62px;height:62px;margin-top:2px;padding:6px;box-sizing:border-box;
+  border:1.5px solid var(--trait-fort);background-color:#fff;
+  background-repeat:no-repeat;background-position:center;background-size:contain;
+  background-origin:content-box;background-image:none}
+.jalon[data-etat="fait"] .puce::before,
+.jalon[data-etat="cours"] .puce::before{display:none}
+/* L etape en cours garde exactement la taille des autres : l anneau vert
+   est pose autour, il ne rogne pas l interieur. Le halo bat comme avant. */
+.jalon[data-etat="cours"] .puce::after{content:"";position:absolute;inset:-10px;
+  border-radius:50%;border:2px solid var(--vert);opacity:.5;
+  animation:halo 2.4s ease-out infinite;display:block}
+.jalon[data-etape^="cmp-"][data-etat="cours"] .puce::after{border-radius:41px}
+
+.jalon[data-chambre="an"] .puce{background-image:url("images/embleme-an.png");
+  border-color:var(--bleu)}
+.jalon[data-chambre="senat"] .puce{background-image:url("images/embleme-senat.png");
+  border-color:var(--rouge)}
+.jalon[data-chambre="commun"] .puce{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236B6B6B%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M12%203.5v17M3.5%2012h17%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%228.5%22%20stroke-width%3D%221.4%22%2F%3E%3C%2Fsvg%3E");border-color:var(--gris);
+  padding:16px}
+.jalon[data-etape="saisine-cc"] .puce,
+.jalon[data-etape="decision-cc"] .puce{background-image:url("images/embleme-cc.png");
+  border-color:var(--bleu-sombre);padding:13px}
+
+/* L embleme suit l institution nommee dans l intitule : saisie,
+   convoquee ou destinataire. */
+.jalon[data-etape="nl-transmission-an"] .puce{background-image:url("images/embleme-an.png");
+  border-color:var(--bleu);padding:6px}
+.jalon[data-etape="transmission-senat"] .puce,
+.jalon[data-etape="nl-transmission-senat"] .puce{background-image:url("images/embleme-senat.png");
+  border-color:var(--rouge);padding:6px}
+.jalon[data-etape="nl-transmission-an"] .quand{background:var(--bleu)}
+.jalon[data-etape="transmission-senat"] .quand,
+.jalon[data-etape="nl-transmission-senat"] .quand{background:var(--rouge)}
+.jalon[data-etape="nl-transmission-an"] .fiche{border-left-color:var(--bleu)}
+.jalon[data-etape="transmission-senat"] .fiche,
+.jalon[data-etape="nl-transmission-senat"] .fiche{border-left-color:var(--rouge)}
+
+/* La commission mixte reunit les deux chambres : medaillon allonge. */
+.jalon[data-etape^="cmp-"] .puce{width:112px;border-radius:31px;padding:9px 12px;
+  background-image:url("images/embleme-cmp.png");border-color:var(--gris)}
+
+.jalon[data-etat="cours"] .puce{border-color:var(--vert);
+  box-shadow:0 0 0 3px var(--vert)}
+.jalon[data-etat="venir"] .puce{background-image:none;border-color:var(--trait)}
+.jalon.devi .puce{background-image:none}
+
+/* Ce qui n appartient a aucune chambre reste neutre. */
+.jalon[data-chambre="commun"] .quand{background:var(--gris)}
+.jalon[data-chambre="commun"] .fiche{border-left-color:var(--gris)}
+.jalon[data-etape="saisine-cc"] .quand,
+.jalon[data-etape="decision-cc"] .quand{background:var(--bleu-sombre)}
+.jalon[data-etape="saisine-cc"] .fiche,
+.jalon[data-etape="decision-cc"] .fiche{border-left-color:var(--bleu-sombre)}
+.phrase .l.commun{color:var(--encre);font-weight:700}
+
+.couloir{display:inline-flex;align-items:center;gap:11px}
+.couloir.gauche::before{content:"";width:38px;height:32px;background-size:contain;
+  background-position:center;background-repeat:no-repeat;
+  background-image:url("images/embleme-an.png")}
+.couloir.droite::after{content:"";width:34px;height:32px;background-size:contain;
+  background-position:center;background-repeat:no-repeat;
+  background-image:url("images/embleme-senat.png")}
+
+/* La promulgation acheve la procedure : bandeau vert et sceau. */
+.jalon[data-etape="promulgation"] .quand{background:var(--vert)}
+.jalon[data-etape="promulgation"] .fiche{border-left-color:var(--vert)}
+.jalon[data-etape="promulgation"] .puce{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%231E7A43%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%228.6%22%2F%3E%3Cpath%20d%3D%22M8.2%2012.3l2.6%202.6%205-5.4%22%2F%3E%3C%2Fsvg%3E");
+  border-color:var(--vert);padding:13px}
 </style>
 </head>
 <body data-vue="principal">
@@ -560,7 +624,7 @@ body[data-vue="annexe"] .fil{color:var(--ocre)}
       var etat = i<dernier?"fait":(i===dernier?"cours":"venir");
       var o=!!ouverts[i];
       if(e.type==="d") return blocDeviation(e,etat);
-      return '<li class="jalon" data-cote="'+e.co+'" data-chambre="'+e.ch+'" data-etat="'+etat+'">'+
+      return '<li class="jalon" data-cote="'+e.co+'" data-chambre="'+e.ch+'" data-etape="'+e.etape+'" data-code="'+e.code+'" data-etat="'+etat+'">'+
         '<span class="puce" aria-hidden="true"></span>'+
         '<div class="carte">'+
           '<button class="tete" type="button" aria-expanded="'+o+'" data-i="'+i+'">'+
@@ -580,9 +644,9 @@ body[data-vue="annexe"] .fil{color:var(--ocre)}
 
   /* La deviation n est pas une etape : c est un panneau qui mene ailleurs. */
   function blocDeviation(e,etat){
-    var couleur = etat==="venir" ? "#C9D1DC" : "#7A5A16";
-    var svg='<svg class="embranchement" viewBox="0 0 60 40" aria-hidden="true">'+
-      '<path d="M30 0 C30 19 25 26 2 26" fill="none" stroke="'+couleur+'" stroke-width="2"/>'+
+    var couleur = etat==="venir" ? "#B8B8B8" : "#7A5A16";
+    var svg='<svg class="embranchement" viewBox="0 0 72 44" aria-hidden="true">'+
+      '<path d="M36 0 C36 22 30 30 2 30" fill="none" stroke="'+couleur+'" stroke-width="2"/>'+
       '</svg>';
     return '<li class="jalon devi" data-cote="gauche" data-etat="'+etat+'">'+svg+
       '<div class="carte">'+
@@ -643,8 +707,8 @@ body[data-vue="annexe"] .fil{color:var(--ocre)}
       return {
         type:'j', d: ev.date, code: ctx.code_acte || '',
         dossier: ctx.dossier || principal,
-        ch: c.chambre === 'senat' ? 'senat' : 'an',
-        co: c.cote, nom: c.nom, doc: ev.doc || '',
+        ch: c.chambre === 'senat' ? 'senat' : (c.chambre === 'an' ? 'an' : 'commun'),
+        etape: ev.etape, co: c.cote, nom: c.nom, doc: ev.doc || '',
         txt: (valide && valide.texte)
                ? valide.texte
                : c.texte + (ev.precision ? ' ' + ev.precision : ''),
