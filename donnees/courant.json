@@ -1,6 +1,5 @@
 {
-  "commentaire": "Décrit le site : la liste des millésimes, ce que chacun contient, et lequel est en cours. Une section absente ou nulle s'affiche comme à venir. Le champ collecte indique au collecteur les seuls dossiers à mettre à jour.",
-
+  "commentaire": "Décrit le site : la liste des millésimes, ce que chacun contient, et lequel est en cours. Une section absente ou nulle s'affiche comme à venir. Le champ collecte indique au collecteur les seuls dossiers à mettre à jour. Le champ textes désigne le fichier des paragraphes validés, qui remplacent le texte générique du catalogue.",
   "millesimes": [
     {
       "cle": "plf-2027",
@@ -15,7 +14,8 @@
           "sequences": [
             "donnees/plf-2027-auto.json",
             "donnees/plf-2027.json"
-          ]
+          ],
+          "textes": "donnees/textes-plf-2027.json"
         },
         "articles": null,
         "amendements": null
@@ -37,7 +37,8 @@
           "sequences": [
             "donnees/plf-2026-auto.json",
             "donnees/plf-2026.json"
-          ]
+          ],
+          "textes": "donnees/textes-plf-2026.json"
         },
         "articles": null,
         "amendements": null
